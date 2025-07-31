@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ganhos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrollability */
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 900px; /* Increased max-width */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #334155; /* Darker text for labels */
+        }
+        .input-group input {
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1; /* Light gray border */
+            border-radius: 0.75rem; /* Rounded input fields */
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6; /* Blue focus border */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Light blue shadow on focus */
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+            gap: 1.5rem;
+        }
+        .result-card {
+            background-color: #eff6ff; /* Very light blue background */
+            padding: 1.25rem;
+            border-radius: 1rem; /* Rounded cards */
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1e40af; /* Darker blue for titles */
+            margin-bottom: 0.5rem;
+        }
+        .result-card p {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1d4ed8; /* Stronger blue for values */
+        }
+        .section-title {
+            font-size: 1.75rem; /* Larger title */
+            font-weight: 700;
+            color: #1e293b; /* Dark title color */
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .error-message {
+            color: #ef4444; /* Red error message */
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+    <div class="container">
+        <h1 class="section-title">Calculadora de Ganhos</h1>
+
+        <!-- Seção de Entradas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="input-group">
+                <label for="hourlyRateUSD">Taxa Horária (USD):</label>
+                <input type="number" id="hourlyRateUSD" value="44" step="0.01" min="0" class="w-full">
+                <p id="errorHourlyRateUSD" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
+                <label for="hoursPerDay">Horas por Dia:</label>
+                <input type="number" id="hoursPerDay" value="8" step="0.5" min="0" class="w-full">
+                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
+                <label for="daysPerWeek">Dias por Semana:</label>
+                <input type="number" id="daysPerWeek" value="5" step="1" min="0" class="w-full">
+                <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
+                <label for="annualEarningsEUR">Ganhos Anuais (EUR):</label>
+                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full">
+                <p id="errorAnnualEarningsEUR" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
+                <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
+                <input type="number" id="usdToBrlRate" value="5.58" step="0.001" min="0" class="w-full">
+                <p id="errorUsdToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
+                <label for="eurToBrlRate">Taxa de Câmbio (EUR para BRL):</label>
+                <input type="number" id="eurToBrlRate" value="6.00" step="0.001" min="0" class="w-full">
+                <p id="errorEurToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+        </div>
+
+        <!-- Seção de Resultados USD -->
+        <h2 class="section-title mt-8">Resultados em Dólar Americano (USD)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Diário</h3>
+                <p id="dailyUSD">$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Semanal</h3>
+                <p id="weeklyUSD">$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Mensal</h3>
+                <p id="monthlyUSD">$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Anual</h3>
+                <p id="annualUSD">$0.00</p>
+            </div>
+        </div>
+
+        <!-- Seção de Resultados EUR -->
+        <h2 class="section-title mt-8">Resultados em Euro (€)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Diário</h3>
+                <p id="dailyEUR">€0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Semanal</h3>
+                <p id="weeklyEUR">€0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Mensal</h3>
+                <p id="monthlyEUR">€0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Anual</h3>
+                <p id="annualEUR">€0.00</p>
+            </div>
+        </div>
+
+        <!-- Seção de Resultados BRL -->
+        <h2 class="section-title mt-8">Resultados em Real Brasileiro (BRL)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Diário (equivalente USD)</h3>
+                <p id="dailyBRL_USD">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Semanal (equivalente USD)</h3>
+                <p id="weeklyBRL_USD">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Mensal (equivalente USD)</h3>
+                <p id="monthlyBRL_USD">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Anual (equivalente USD)</h3>
+                <p id="annualBRL_USD">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Diário (equivalente EUR)</h3>
+                <p id="dailyBRL_EUR">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Semanal (equivalente EUR)</h3>
+                <p id="weeklyBRL_EUR">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Mensal (equivalente EUR)</h3>
+                <p id="monthlyBRL_EUR">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Anual (equivalente EUR)</h3>
+                <p id="annualBRL_EUR">R$0.00</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to input elements
+        const hourlyRateUSDInput = document.getElementById('hourlyRateUSD');
+        const hoursPerDayInput = document.getElementById('hoursPerDay');
+        const daysPerWeekInput = document.getElementById('daysPerWeek');
+        const annualEarningsEURInput = document.getElementById('annualEarningsEUR');
+        const usdToBrlRateInput = document.getElementById('usdToBrlRate');
+        const eurToBrlRateInput = document.getElementById('eurToBrlRate');
+
+        // Get references to error message elements
+        const errorHourlyRateUSD = document.getElementById('errorHourlyRateUSD');
+        const errorHoursPerDay = document.getElementById('errorHoursPerDay');
+        const errorDaysPerWeek = document.getElementById('errorDaysPerWeek');
+        const errorAnnualEarningsEUR = document.getElementById('errorAnnualEarningsEUR');
+        const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
+        const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
+
+        // Constants for calculations
+        const WEEKS_PER_YEAR = 52;
+        const MONTHLY_WORK_DAYS = 22; // Average working days per month
+        const ANNUAL_WORK_DAYS = 260; // 52 weeks * 5 days
+
+        // Function to format numbers as currency
+        const formatCurrency = (value, currencySymbol, locale = 'pt-BR') => {
+            if (isNaN(value) || value === null) {
+                return `${currencySymbol}0.00`;
+            }
+            return new Intl.NumberFormat(locale, {
+                style: 'currency',
+                currency: currencySymbol === '$' ? 'USD' : (currencySymbol === '€' ? 'EUR' : 'BRL')
+            }).format(value);
+        };
+
+        // Function to validate input and show/hide error messages
+        const validateInput = (inputElement, errorElement) => {
+            const value = parseFloat(inputElement.value);
+            if (isNaN(value) || value < 0) {
+                errorElement.classList.remove('hidden');
+                return false;
+            } else {
+                errorElement.classList.add('hidden');
+                return true;
+            }
+        };
+
+        // Main calculation function
+        const calculateEarnings = () => {
+            // Validate all inputs
+            const isValidHourlyRateUSD = validateInput(hourlyRateUSDInput, errorHourlyRateUSD);
+            const isValidHoursPerDay = validateInput(hoursPerDayInput, errorHoursPerDay);
+            const isValidDaysPerWeek = validateInput(daysPerWeekInput, errorDaysPerWeek);
+            const isValidAnnualEarningsEUR = validateInput(annualEarningsEURInput, errorAnnualEarningsEUR);
+            const isValidUsdToBrlRate = validateInput(usdToBrlRateInput, errorUsdToBrlRate);
+            const isValidEurToBrlRate = validateInput(eurToBrlRateInput, errorEurToBrlRate);
+
+            // Only proceed with calculations if all inputs are valid
+            if (!isValidHourlyRateUSD || !isValidHoursPerDay || !isValidDaysPerWeek ||
+                !isValidAnnualEarningsEUR || !isValidUsdToBrlRate || !isValidEurToBrlRate) {
+                return; // Stop if any input is invalid
+            }
+
+            // Get parsed values
+            const hourlyRateUSD = parseFloat(hourlyRateUSDInput.value);
+            const hoursPerDay = parseFloat(hoursPerDayInput.value);
+            const daysPerWeek = parseFloat(daysPerWeekInput.value);
+            const annualEarningsEUR = parseFloat(annualEarningsEURInput.value);
+            const usdToBrlRate = parseFloat(usdToBrlRateInput.value);
+            const eurToBrlRate = parseFloat(eurToBrlRateInput.value);
+
+            // --- Calculate USD Earnings ---
+            const dailyUSD = hourlyRateUSD * hoursPerDay;
+            const weeklyUSD = dailyUSD * daysPerWeek;
+            const monthlyUSD = dailyUSD * MONTHLY_WORK_DAYS;
+            const annualUSD = weeklyUSD * WEEKS_PER_YEAR;
+
+            document.getElementById('dailyUSD').textContent = formatCurrency(dailyUSD, '$');
+            document.getElementById('weeklyUSD').textContent = formatCurrency(weeklyUSD, '$');
+            document.getElementById('monthlyUSD').textContent = formatCurrency(monthlyUSD, '$');
+            document.getElementById('annualUSD').textContent = formatCurrency(annualUSD, '$');
+
+            // --- Calculate EUR Earnings ---
+            const monthlyEUR = annualEarningsEUR / 12;
+            const weeklyEUR = annualEarningsEUR / WEEKS_PER_YEAR;
+            const dailyEUR = annualEarningsEUR / ANNUAL_WORK_DAYS; // Assuming 260 working days for annual EUR
+
+            document.getElementById('dailyEUR').textContent = formatCurrency(dailyEUR, '€');
+            document.getElementById('weeklyEUR').textContent = formatCurrency(weeklyEUR, '€');
+            document.getElementById('monthlyEUR').textContent = formatCurrency(monthlyEUR, '€');
+            document.getElementById('annualEUR').textContent = formatCurrency(annualEarningsEUR, '€');
+
+            // --- Calculate BRL Earnings (from USD) ---
+            document.getElementById('dailyBRL_USD').textContent = formatCurrency(dailyUSD * usdToBrlRate, 'R$');
+            document.getElementById('weeklyBRL_USD').textContent = formatCurrency(weeklyUSD * usdToBrlRate, 'R$');
+            document.getElementById('monthlyBRL_USD').textContent = formatCurrency(monthlyUSD * usdToBrlRate, 'R$');
+            document.getElementById('annualBRL_USD').textContent = formatCurrency(annualUSD * usdToBrlRate, 'R$');
+
+            // --- Calculate BRL Earnings (from EUR) ---
+            document.getElementById('dailyBRL_EUR').textContent = formatCurrency(dailyEUR * eurToBrlRate, 'R$');
+            document.getElementById('weeklyBRL_EUR').textContent = formatCurrency(weeklyEUR * eurToBrlRate, 'R$');
+            document.getElementById('monthlyBRL_EUR').textContent = formatCurrency(monthlyEUR * eurToBrlRate, 'R$');
+            document.getElementById('annualBRL_EUR').textContent = formatCurrency(annualEarningsEUR * eurToBrlRate, 'R$');
+        };
+
+        // Add event listeners to all input fields
+        hourlyRateUSDInput.addEventListener('input', calculateEarnings);
+        hoursPerDayInput.addEventListener('input', calculateEarnings);
+        daysPerWeekInput.addEventListener('input', calculateEarnings);
+        annualEarningsEURInput.addEventListener('input', calculateEarnings);
+        usdToBrlRateInput.addEventListener('input', calculateEarnings);
+        eurToBrlRateInput.addEventListener('input', calculateEarnings);
+
+        // Initial calculation on page load
+        document.addEventListener('DOMContentLoaded', calculateEarnings);
+    </script>
+</body>
+</html>
