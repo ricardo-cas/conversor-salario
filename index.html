@@ -106,29 +106,29 @@
         <!-- Seção de Entradas -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="input-group">
-                <label for="hourlyRateUSD">Taxa Horária (USD):</label>
-                <input type="number" id="hourlyRateUSD" value="44" step="0.01" min="0" class="w-full">
-                <p id="errorHourlyRateUSD" class="error-message hidden">Por favor, insira um número válido.</p>
+                <label for="hourlyRate">Valor Hora:</label>
+                <input type="number" id="hourlyRate" value="44" step="0.01" min="0" class="w-full">
+                <p id="errorHourlyRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
-                <label for="annualEarningsUSD">Ganhos Anuais:</label>
+                <label for="annualEarningsUSD">Ganhos Anuais (USD):</label>
                 <input type="number" id="annualEarningsUSD" value="" step="0.01" min="0" class="w-full" placeholder="Opcional">
                 <p id="errorAnnualEarningsUSD" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
+                <label for="annualEarningsEUR">Ganhos Anuais (EUR):</label>
+                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full" placeholder="Opcional">
+                <p id="errorAnnualEarningsEUR" class="error-message hidden">Por favor, insira um número válido.</p>
+            </div>
+            <div class="input-group">
                 <label for="hoursPerDay">Horas por Dia:</label>
-                <input type="number" id="hoursPerDay" value="8" step="0.5" min="0" class="w-full">
-                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido.</p>
+                <input type="number" id="hoursPerDay" value="8" step="0.5" min="0" max="24" class="w-full">
+                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido entre 0 e 24.</p>
             </div>
             <div class="input-group">
                 <label for="daysPerWeek">Dias por Semana (1-7):</label>
                 <input type="number" id="daysPerWeek" value="5" step="1" min="1" max="7" class="w-full">
                 <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número inteiro entre 1 e 7.</p>
-            </div>
-            <div class="input-group">
-                <label for="annualEarningsEUR">Ganhos Anuais (EUR):</label>
-                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full">
-                <p id="errorAnnualEarningsEUR" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
                 <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
@@ -237,27 +237,26 @@
 
     <script>
         // Get references to input elements
-        const hourlyRateUSDInput = document.getElementById('hourlyRateUSD');
+        const hourlyRateInput = document.getElementById('hourlyRate');
         const annualEarningsUSDInput = document.getElementById('annualEarningsUSD');
+        const annualEarningsEURInput = document.getElementById('annualEarningsEUR');
         const hoursPerDayInput = document.getElementById('hoursPerDay');
         const daysPerWeekInput = document.getElementById('daysPerWeek');
-        const annualEarningsEURInput = document.getElementById('annualEarningsEUR');
         const usdToBrlRateInput = document.getElementById('usdToBrlRate');
         const eurToBrlRateInput = document.getElementById('eurToBrlRate');
 
         // Get references to error message elements
-        const errorHourlyRateUSD = document.getElementById('errorHourlyRateUSD');
+        const errorHourlyRate = document.getElementById('errorHourlyRate');
         const errorAnnualEarningsUSD = document.getElementById('errorAnnualEarningsUSD');
+        const errorAnnualEarningsEUR = document.getElementById('errorAnnualEarningsEUR');
         const errorHoursPerDay = document.getElementById('errorHoursPerDay');
         const errorDaysPerWeek = document.getElementById('errorDaysPerWeek');
-        const errorAnnualEarningsEUR = document.getElementById('errorAnnualEarningsEUR');
         const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
         const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
 
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
         const MONTHLY_WORK_DAYS = 22; // Average working days per month
-        // ANNUAL_WORK_DAYS will be calculated based on hoursPerDay and daysPerWeek
 
         // Function to format numbers as currency
         const formatCurrency = (value, currencySymbol, locale = 'pt-BR') => {
@@ -294,16 +293,14 @@
         // Main calculation function
         const calculateEarnings = () => {
             // Validate all inputs
-            const isValidHoursPerDay = validateInput(hoursPerDayInput, errorHoursPerDay);
+            const isValidHoursPerDay = validateInput(hoursPerDayInput, errorHoursPerDay, 0, 24); // Max 24 hours
             const isValidDaysPerWeek = validateInput(daysPerWeekInput, errorDaysPerWeek, 1, 7, true); // Days per week 1-7, integer
-            const isValidAnnualEarningsEUR = validateInput(annualEarningsEURInput, errorAnnualEarningsEUR);
             const isValidUsdToBrlRate = validateInput(usdToBrlRateInput, errorUsdToBrlRate);
             const isValidEurToBrlRate = validateInput(eurToBrlRateInput, errorEurToBrlRate);
 
             // Get parsed values, defaulting to 0 if invalid or empty
             const hoursPerDay = isValidHoursPerDay ? parseFloat(hoursPerDayInput.value) : 0;
             const daysPerWeek = isValidDaysPerWeek ? parseInt(daysPerWeekInput.value) : 0;
-            const annualEarningsEUR = isValidAnnualEarningsEUR ? parseFloat(annualEarningsEURInput.value) : 0;
             const usdToBrlRate = isValidUsdToBrlRate ? parseFloat(usdToBrlRateInput.value) : 0;
             const eurToBrlRate = isValidEurToBrlRate ? parseFloat(eurToBrlRateInput.value) : 0;
 
@@ -314,36 +311,29 @@
             let baseHourlyRateUSD = null;
             let baseAnnualUSD = null;
 
-            // Check if hourly rate is provided and valid
-            const isHourlyRateUSDProvided = hourlyRateUSDInput.value.trim() !== '' && validateInput(hourlyRateUSDInput, errorHourlyRateUSD);
-            // Check if annual earnings USD is provided and valid
+            const isHourlyRateProvided = hourlyRateInput.value.trim() !== '' && validateInput(hourlyRateInput, errorHourlyRate);
             const isAnnualEarningsUSDProvided = annualEarningsUSDInput.value.trim() !== '' && validateInput(annualEarningsUSDInput, errorAnnualEarningsUSD);
 
-            if (isHourlyRateUSDProvided) {
-                baseHourlyRateUSD = parseFloat(hourlyRateUSDInput.value);
-                // Calculate annual from hourly
+            if (isHourlyRateProvided) {
+                baseHourlyRateUSD = parseFloat(hourlyRateInput.value);
                 if (hoursPerDay > 0 && daysPerWeek > 0) {
                     baseAnnualUSD = baseHourlyRateUSD * hoursPerDay * daysPerWeek * WEEKS_PER_YEAR;
-                    // Update annual earnings input field
                     annualEarningsUSDInput.value = baseAnnualUSD.toFixed(2);
                 } else {
                     baseAnnualUSD = 0;
-                    annualEarningsUSDInput.value = ''; // Clear if cannot calculate
+                    annualEarningsUSDInput.value = '';
                 }
             } else if (isAnnualEarningsUSDProvided) {
                 baseAnnualUSD = parseFloat(annualEarningsUSDInput.value);
-                // Calculate hourly from annual
                 if (hoursPerDay > 0 && daysPerWeek > 0 && ANNUAL_WORK_DAYS > 0) {
                     baseHourlyRateUSD = baseAnnualUSD / (hoursPerDay * ANNUAL_WORK_DAYS);
-                    // Update hourly rate input field
-                    hourlyRateUSDInput.value = baseHourlyRateUSD.toFixed(2);
+                    hourlyRateInput.value = baseHourlyRateUSD.toFixed(2);
                 } else {
                     baseHourlyRateUSD = 0;
-                    hourlyRateUSDInput.value = ''; // Clear if cannot calculate
+                    hourlyRateInput.value = '';
                 }
             } else {
-                // Both are empty or invalid, clear both and set results to 0
-                hourlyRateUSDInput.value = '';
+                hourlyRateInput.value = '';
                 annualEarningsUSDInput.value = '';
             }
 
@@ -355,10 +345,12 @@
                 finalWeeklyUSD = finalDailyUSD * daysPerWeek;
                 finalMonthlyUSD = finalDailyUSD * MONTHLY_WORK_DAYS;
                 finalAnnualUSD = finalWeeklyUSD * WEEKS_PER_YEAR;
-            } else if (baseAnnualUSD !== null && baseAnnualUSD > 0) { // Fallback if hourly could not be derived but annual is present
+            } else if (baseAnnualUSD !== null && baseAnnualUSD > 0) {
                 finalAnnualUSD = baseAnnualUSD;
                 finalWeeklyUSD = finalAnnualUSD / WEEKS_PER_YEAR;
-                finalDailyUSD = finalWeeklyUSD / daysPerWeek; // This might be 0 if daysPerWeek is 0
+                if (daysPerWeek > 0) {
+                    finalDailyUSD = finalWeeklyUSD / daysPerWeek;
+                }
                 finalMonthlyUSD = finalDailyUSD * MONTHLY_WORK_DAYS;
             }
 
@@ -367,10 +359,22 @@
             document.getElementById('monthlyUSD').textContent = formatCurrency(finalMonthlyUSD, '$');
             document.getElementById('annualUSD').textContent = formatCurrency(finalAnnualUSD, '$');
 
-            // --- Calculate EUR Earnings ---
+            // --- Determine EUR source of truth and calculate ---
+            let baseAnnualEUR = null;
+
+            const isAnnualEarningsEURProvided = annualEarningsEURInput.value.trim() !== '' && validateInput(annualEarningsEURInput, errorAnnualEarningsEUR);
+
+            if (isAnnualEarningsEURProvided) {
+                baseAnnualEUR = parseFloat(annualEarningsEURInput.value);
+            } else {
+                annualEarningsEURInput.value = '';
+            }
+
+            // --- Final EUR Calculations ---
             let finalDailyEUR = 0, finalWeeklyEUR = 0, finalMonthlyEUR = 0, finalAnnualEUR = 0;
-            if (annualEarningsEUR > 0 && hoursPerDay > 0 && daysPerWeek > 0) {
-                finalAnnualEUR = annualEarningsEUR;
+
+            if (baseAnnualEUR !== null && baseAnnualEUR > 0 && hoursPerDay > 0 && daysPerWeek > 0) {
+                finalAnnualEUR = baseAnnualEUR;
                 finalMonthlyEUR = finalAnnualEUR / 12;
                 finalWeeklyEUR = finalAnnualEUR / WEEKS_PER_YEAR;
                 if (ANNUAL_WORK_DAYS > 0) {
@@ -397,19 +401,17 @@
         };
 
         // Add event listeners to all input fields
-        hourlyRateUSDInput.addEventListener('input', () => {
-            // Clear annual earnings when hourly rate is edited
-            annualEarningsUSDInput.value = '';
+        hourlyRateInput.addEventListener('input', () => {
+            annualEarningsUSDInput.value = ''; // Clear annual when hourly is edited
             calculateEarnings();
         });
         annualEarningsUSDInput.addEventListener('input', () => {
-            // Clear hourly rate when annual earnings is edited
-            hourlyRateUSDInput.value = '';
+            hourlyRateInput.value = ''; // Clear hourly when annual is edited
             calculateEarnings();
         });
+        annualEarningsEURInput.addEventListener('input', calculateEarnings); // No hourly EUR to clear
         hoursPerDayInput.addEventListener('input', calculateEarnings);
         daysPerWeekInput.addEventListener('input', calculateEarnings);
-        annualEarningsEURInput.addEventListener('input', calculateEarnings);
         usdToBrlRateInput.addEventListener('input', calculateEarnings);
         eurToBrlRateInput.addEventListener('input', calculateEarnings);
 
