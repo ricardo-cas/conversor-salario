@@ -61,14 +61,14 @@
             font-weight: 600;
             color: #334155; /* Darker text for labels */
         }
-        .input-group input {
+        .input-group input, .input-group select {
             padding: 0.75rem 1rem;
             border: 1px solid #cbd5e1; /* Light gray border */
             border-radius: 0.75rem; /* Rounded input fields */
             font-size: 1rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #3b82f6; /* Blue focus border */
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Light blue shadow on focus */
@@ -146,6 +146,15 @@
             color: #1d4ed8;
             font-weight: 600;
         }
+        .disclaimer {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
@@ -155,7 +164,7 @@
         <!-- Seção de Entradas -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="input-group">
-                <label for="hourlyRate">Valor Hora:</label>
+                <label for="hourlyRate">Valor Hora (USD):</label>
                 <input type="number" id="hourlyRate" value="44" step="0.01" min="0" class="w-full">
                 <p id="errorHourlyRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
@@ -178,6 +187,22 @@
                 <label for="daysPerWeek">Dias por Semana (1-7):</label>
                 <input type="number" id="daysPerWeek" value="5" step="1" min="1" max="7" class="w-full">
                 <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número inteiro entre 1 e 7.</p>
+            </div>
+            <div class="input-group">
+                <label for="companyType">Tipo de Empresa:</label>
+                <select id="companyType" class="w-full">
+                    <option value="MEI">MEI (Microempreendedor Individual)</option>
+                    <option value="ME" selected>ME (Microempresa)</option>
+                    <option value="EPP">EPP (Empresa de Pequeno Porte)</option>
+                </select>
+            </div>
+            <div class="input-group" id="activityTypeGroup">
+                <label for="activityType">Tipo de Atividade (para ME/EPP):</label>
+                <select id="activityType" class="w-full">
+                    <option value="comercio">Comércio (Anexo I)</option>
+                    <option value="servicos_geral" selected>Serviços (Geral - Anexo III)</option>
+                    <option value="servicos_intelectual">Serviços (Intelectual/Alto Fator R - Anexo V)</option>
+                </select>
             </div>
             <div class="input-group">
                 <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
@@ -288,6 +313,91 @@
                 </div>
             </div>
         </div>
+
+        <!-- Nova Seção de Impostos -->
+        <h2 class="section-title mt-8">Simulação de Impostos (BRL)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Tipo de Empresa</h3>
+                <p id="taxCompanyType">N/A</p>
+            </div>
+             <div class="result-card">
+                <h3>Faturamento Anual Bruto (BRL)</h3>
+                <p id="taxGrossAnnualBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Imposto Anual Estimado (BRL)</h3>
+                <p id="taxAmountBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>% Efetiva de Imposto</h3>
+                <p id="taxPercentage">0.00%</p>
+            </div>
+            <div class="result-card">
+                <h3>Ganhos Anuais Líquidos (BRL)</h3>
+                <p id="taxNetAnnualBRL">R$0.00</p>
+            </div>
+        </div>
+        <div class="disclaimer">
+            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma **simulação simplificada** e não substitui a consulta a um profissional de contabilidade. As alíquotas e regras tributárias no Brasil são complexas e dependem de diversos fatores (CNAE específico, faturamento acumulado real, despesas, etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para garantir a conformidade fiscal da sua empresa, **sempre consulte um contador.**</p>
+            <p>Os valores do DAS-MEI são fixos para 2025 (R$ 76,90 para Comércio/Indústria, R$ 80,90 para Serviços, R$ 81,90 para Comércio e Serviços). Para ME/EPP, o faturamento anual projetado é usado como base para a alíquota efetiva.</p>
+        </div>
+
+        <!-- Nova Seção de Plano de Saúde e Líquido Final -->
+        <h2 class="section-title mt-8">Simulação de Plano de Saúde (BRL)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Adulto 1 (33 anos)</h3>
+                <p id="healthPlanAdult1Cost">R$0.00/mês</p>
+            </div>
+            <div class="result-card">
+                <h3>Adulto 2 (34 anos)</h3>
+                <p id="healthPlanAdult2Cost">R$0.00/mês</p>
+            </div>
+            <div class="result-card">
+                <h3>Filho (5 meses)</h3>
+                <p id="healthPlanChildCost">R$0.00/mês</p>
+            </div>
+            <div class="result-card">
+                <h3>Custo Total Anual do Plano</h3>
+                <p id="healthPlanTotalAnnual">R$0.00</p>
+            </div>
+        </div>
+
+        <h2 class="section-title mt-8">Resultados Líquidos Finais (BRL)</h2>
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Ganhos Anuais Brutos</h3>
+                <p id="finalGrossAnnualBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Total de Impostos Anuais</h3>
+                <p id="finalTaxAmountBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Custo Anual do Plano de Saúde</h3>
+                <p id="finalHealthPlanCost">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Ganhos Anuais Líquidos</h3>
+                <p id="finalNetAnnualBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Ganhos Mensais Líquidos</h3>
+                <p id="finalNetMonthlyBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Ganhos Semanais Líquidos</h3>
+                <p id="finalNetWeeklyBRL">R$0.00</p>
+            </div>
+            <div class="result-card">
+                <h3>Ganhos Diários Líquidos</h3>
+                <p id="finalNetDailyBRL">R$0.00</p>
+            </div>
+        </div>
+        <div class="disclaimer">
+            <p><strong>Aviso sobre Plano de Saúde:</strong> Os valores apresentados para o plano de saúde são **estimativas médias** e podem variar significativamente. Fatores como operadora, tipo de plano (enfermaria/apartamento, com/sem coparticipação), rede credenciada, abrangência geográfica e condições de contratação (individual, familiar, empresarial) influenciam diretamente o custo real. Para valores precisos, é recomendável solicitar cotações diretamente com as seguradoras ou corretoras de plano de saúde.</p>
+        </div>
     </div>
 
     <script>
@@ -299,6 +409,9 @@
         const daysPerWeekInput = document.getElementById('daysPerWeek');
         const usdToBrlRateInput = document.getElementById('usdToBrlRate');
         const eurToBrlRateInput = document.getElementById('eurToBrlRate');
+        const companyTypeSelect = document.getElementById('companyType');
+        const activityTypeSelect = document.getElementById('activityType');
+        const activityTypeGroup = document.getElementById('activityTypeGroup');
 
         // Get references to currency status elements
         const fetchRatesButton = document.getElementById('fetchRatesButton');
@@ -314,9 +427,72 @@
         const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
         const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
 
+        // Get references to tax results elements
+        const taxCompanyType = document.getElementById('taxCompanyType');
+        const taxGrossAnnualBRL = document.getElementById('taxGrossAnnualBRL');
+        const taxAmountBRL = document.getElementById('taxAmountBRL');
+        const taxPercentage = document.getElementById('taxPercentage');
+        const taxNetAnnualBRL = document.getElementById('taxNetAnnualBRL');
+
+        // Get references to health plan results elements
+        const healthPlanAdult1Cost = document.getElementById('healthPlanAdult1Cost');
+        const healthPlanAdult2Cost = document.getElementById('healthPlanAdult2Cost');
+        const healthPlanChildCost = document.getElementById('healthPlanChildCost');
+        const healthPlanTotalAnnual = document.getElementById('healthPlanTotalAnnual');
+
+        // Get references to final net results elements
+        const finalGrossAnnualBRL = document.getElementById('finalGrossAnnualBRL');
+        const finalTaxAmountBRL = document.getElementById('finalTaxAmountBRL');
+        const finalHealthPlanCost = document.getElementById('finalHealthPlanCost');
+        const finalNetAnnualBRL = document.getElementById('finalNetAnnualBRL');
+        const finalNetMonthlyBRL = document.getElementById('finalNetMonthlyBRL'); // New
+        const finalNetWeeklyBRL = document.getElementById('finalNetWeeklyBRL');   // New
+        const finalNetDailyBRL = document.getElementById('finalNetDailyBRL');     // New
+
+
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
         const MONTHLY_WORK_DAYS = 22; // Average working days per month
+        const SALARY_MINIMUM_2025 = 1518.00; // Salário mínimo de 2025 (exemplo, pode variar)
+        const AVERAGE_WEEKS_PER_MONTH = 4.33; // Approximately 52 weeks / 12 months
+
+        // Simples Nacional Tables (Simplified for demonstration) - 2025 values
+        // RBT12: Receita Bruta Total acumulada nos últimos 12 meses
+        // ALIQ: Alíquota nominal
+        // PD: Parcela a deduzir
+        const SIMPLES_NACIONAL_TABLES = {
+            comercio: [ // Anexo I
+                { rbt12_max: 180000, aliq: 0.04, pd: 0 },
+                { rbt12_max: 360000, aliq: 0.073, pd: 5940 },
+                { rbt12_max: 720000, aliq: 0.095, pd: 13860 },
+                { rbt12_max: 1800000, aliq: 0.107, pd: 22500 },
+                { rbt12_max: 3600000, aliq: 0.143, pd: 87300 },
+                { rbt12_max: 4800000, aliq: 0.19, pd: 378000 }
+            ],
+            servicos_geral: [ // Anexo III
+                { rbt12_max: 180000, aliq: 0.06, pd: 0 },
+                { rbt12_max: 360000, aliq: 0.112, pd: 9360 },
+                { rbt12_max: 720000, aliq: 0.135, pd: 17640 },
+                { rbt12_max: 1800000, aliq: 0.16, pd: 35640 },
+                { rbt12_max: 3600000, aliq: 0.21, pd: 125640 },
+                { rbt12_max: 4800000, aliq: 0.33, pd: 648000 }
+            ],
+            servicos_intelectual: [ // Anexo V (Alto Fator R - simplificado, sem cálculo do Fator R)
+                { rbt12_max: 180000, aliq: 0.155, pd: 0 },
+                { rbt12_max: 360000, aliq: 0.18, pd: 4500 },
+                { rbt12_max: 720000, aliq: 0.195, pd: 9900 },
+                { rbt12_max: 1800000, aliq: 0.205, pd: 17100 },
+                { rbt12_max: 3600000, aliq: 0.23, pd: 62100 },
+                { rbt12_max: 4800000, aliq: 0.305, pd: 540000 }
+            ]
+        };
+
+        // Health Plan Costs (Monthly Estimates based on research)
+        const HEALTH_PLAN_COSTS = {
+            adult_33_34_years: 550.00, // Average for this age range
+            child_0_18_years: 350.00 // Average for babies/children
+        };
+
 
         // Function to format numbers as currency
         const formatCurrency = (value, currencySymbol, locale = 'pt-BR') => {
@@ -382,6 +558,103 @@
             }
         };
 
+        // Function to calculate health plan cost
+        const calculateHealthPlanCost = () => {
+            const adult1Cost = HEALTH_PLAN_COSTS.adult_33_34_years;
+            const adult2Cost = HEALTH_PLAN_COSTS.adult_33_34_years;
+            const childCost = HEALTH_PLAN_COSTS.child_0_18_years;
+
+            const totalMonthly = adult1Cost + adult2Cost + childCost;
+            const totalAnnual = totalMonthly * 12;
+
+            healthPlanAdult1Cost.textContent = formatCurrency(adult1Cost, 'R$') + '/mês';
+            healthPlanAdult2Cost.textContent = formatCurrency(adult2Cost, 'R$') + '/mês';
+            healthPlanChildCost.textContent = formatCurrency(childCost, 'R$') + '/mês';
+            healthPlanTotalAnnual.textContent = formatCurrency(totalAnnual, 'R$');
+
+            return totalAnnual;
+        };
+
+        // Function to calculate taxes
+        const calculateTaxes = (annualGrossBRL, companyType, activityType) => {
+            let taxAmount = 0;
+            let effectivePercentage = 0;
+            const MEI_LIMIT = 81000; // MEI annual limit for 2025
+
+            // Display company type
+            taxCompanyType.textContent = companyType.toUpperCase();
+
+            // Handle MEI
+            if (companyType === 'MEI') {
+                // Check if annual gross BRL exceeds MEI limit
+                if (annualGrossBRL > MEI_LIMIT) {
+                    taxAmount = annualGrossBRL * 0.06; // Simplified higher tax for exceeding MEI
+                    effectivePercentage = 6;
+                    taxCompanyType.textContent += " (Acima do Limite MEI - Simulação ME)";
+                } else {
+                    // Fixed monthly DAS for MEI (2025 values)
+                    let monthlyDAS = 0;
+                    if (activityType === 'comercio') {
+                        monthlyDAS = SALARY_MINIMUM_2025 * 0.05 + 1; // INSS + ICMS
+                    } else if (activityType === 'servicos_geral') {
+                        monthlyDAS = SALARY_MINIMUM_2025 * 0.05 + 5; // INSS + ISS
+                    } else if (activityType === 'servicos_intelectual') { // MEI Comércio e Serviços
+                         monthlyDAS = SALARY_MINIMUM_2025 * 0.05 + 1 + 5; // INSS + ICMS + ISS
+                    }
+                    taxAmount = monthlyDAS * 12; // Annual fixed tax
+                    effectivePercentage = (annualGrossBRL > 0) ? (taxAmount / annualGrossBRL) * 100 : 0;
+                }
+
+            } else { // ME or EPP (Simples Nacional)
+                let table = SIMPLES_NACIONAL_TABLES[activityType];
+                if (!table) {
+                    console.warn(`Tabela de Simples Nacional não encontrada para a atividade: ${activityType}`);
+                    taxAmount = 0;
+                    effectivePercentage = 0;
+                } else {
+                    let foundRange = null;
+                    for (const range of table) {
+                        if (annualGrossBRL <= range.rbt12_max) {
+                            foundRange = range;
+                            break;
+                        }
+                    }
+
+                    if (foundRange) {
+                        if (annualGrossBRL > 0) {
+                            effectivePercentage = ((annualGrossBRL * foundRange.aliq - foundRange.pd) / annualGrossBRL) * 100;
+                            taxAmount = (annualGrossBRL * effectivePercentage) / 100;
+                        } else {
+                            effectivePercentage = 0;
+                            taxAmount = 0;
+                        }
+                    } else {
+                        // If annualGrossBRL exceeds the highest range (e.g., > R$4.8M), it might exit Simples Nacional
+                        // For this simulation, we'll use the highest bracket's effective rate or a warning
+                        const lastRange = table[table.length - 1];
+                        if (annualGrossBRL > 0) {
+                            effectivePercentage = ((annualGrossBRL * lastRange.aliq - lastRange.pd) / annualGrossBRL) * 100;
+                            taxAmount = (annualGrossBRL * effectivePercentage) / 100;
+                            taxCompanyType.textContent += " (Acima do Limite EPP - Simulação)";
+                        } else {
+                            effectivePercentage = 0;
+                            taxAmount = 0;
+                        }
+                    }
+                }
+            }
+
+            const netAnnualBRL = annualGrossBRL - taxAmount;
+
+            taxGrossAnnualBRL.textContent = formatCurrency(annualGrossBRL, 'R$');
+            taxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
+            taxPercentage.textContent = `${effectivePercentage.toFixed(2)}%`;
+            taxNetAnnualBRL.textContent = formatCurrency(netAnnualBRL, 'R$');
+
+            return { taxAmount, netAnnualBRL };
+        };
+
+
         // Main calculation function
         const calculateEarnings = () => {
             // Validate all inputs
@@ -395,6 +668,8 @@
             const daysPerWeek = isValidDaysPerWeek ? parseInt(daysPerWeekInput.value) : 0;
             const usdToBrlRate = isValidUsdToBrlRate ? parseFloat(usdToBrlRateInput.value) : 0;
             const eurToBrlRate = isValidEurToBrlRate ? parseFloat(eurToBrlRateInput.value) : 0;
+            const companyType = companyTypeSelect.value;
+            const activityType = activityTypeSelect.value;
 
             // Calculate ANNUAL_WORK_DAYS based on current inputs
             const ANNUAL_WORK_DAYS = daysPerWeek * WEEKS_PER_YEAR;
@@ -480,36 +755,81 @@
             document.getElementById('annualEUR').textContent = formatCurrency(finalAnnualEUR, '€');
 
             // --- Calculate BRL Earnings (from USD) ---
+            const annualBRL_USD = finalAnnualUSD * usdToBrlRate;
             document.getElementById('dailyBRL_USD').textContent = formatCurrency(finalDailyUSD * usdToBrlRate, 'R$');
             document.getElementById('weeklyBRL_USD').textContent = formatCurrency(finalWeeklyUSD * usdToBrlRate, 'R$');
             document.getElementById('monthlyBRL_USD').textContent = formatCurrency(finalMonthlyUSD * usdToBrlRate, 'R$');
-            document.getElementById('annualBRL_USD').textContent = formatCurrency(finalAnnualUSD * usdToBrlRate, 'R$');
+            document.getElementById('annualBRL_USD').textContent = formatCurrency(annualBRL_USD, 'R$');
 
             // --- Calculate BRL Earnings (from EUR) ---
+            const annualBRL_EUR = finalAnnualEUR * eurToBrlRate;
             document.getElementById('dailyBRL_EUR').textContent = formatCurrency(finalDailyEUR * eurToBrlRate, 'R$');
             document.getElementById('weeklyBRL_EUR').textContent = formatCurrency(finalWeeklyEUR * eurToBrlRate, 'R$');
             document.getElementById('monthlyBRL_EUR').textContent = formatCurrency(finalMonthlyEUR * eurToBrlRate, 'R$');
-            document.getElementById('annualBRL_EUR').textContent = formatCurrency(finalAnnualEUR * eurToBrlRate, 'R$');
+            document.getElementById('annualBRL_EUR').textContent = formatCurrency(annualBRL_EUR, 'R$');
+
+            // --- Call tax calculation with the highest annual BRL earning ---
+            const grossAnnualBRL = Math.max(annualBRL_USD, annualBRL_EUR); // Use the highest projected annual BRL
+            const { taxAmount } = calculateTaxes(grossAnnualBRL, companyType, activityType);
+
+            // --- Calculate Health Plan Cost ---
+            const healthPlanCost = calculateHealthPlanCost();
+
+            // --- Calculate Final Net Annual Earnings ---
+            const finalNetAnnual = grossAnnualBRL - taxAmount - healthPlanCost;
+            const finalNetMonthly = finalNetAnnual / 12;
+            const finalNetWeekly = finalNetAnnual / WEEKS_PER_YEAR;
+            const finalNetDaily = finalNetAnnual / (ANNUAL_WORK_DAYS > 0 ? ANNUAL_WORK_DAYS : 1); // Avoid division by zero
+
+            finalGrossAnnualBRL.textContent = formatCurrency(grossAnnualBRL, 'R$');
+            finalTaxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
+            finalHealthPlanCost.textContent = formatCurrency(healthPlanCost, 'R$');
+            finalNetAnnualBRL.textContent = formatCurrency(finalNetAnnual, 'R$');
+            finalNetMonthlyBRL.textContent = formatCurrency(finalNetMonthly, 'R$'); // New
+            finalNetWeeklyBRL.textContent = formatCurrency(finalNetWeekly, 'R$');   // New
+            finalNetDailyBRL.textContent = formatCurrency(finalNetDaily, 'R$');     // New
         };
 
-        // Add event listeners to input fields that trigger general calculations
+        // Event Listeners
         hourlyRateInput.addEventListener('input', () => {
-            annualEarningsUSDInput.value = ''; // Clear annual when hourly is edited
+            annualEarningsUSDInput.value = '';
             calculateEarnings();
         });
         annualEarningsUSDInput.addEventListener('input', () => {
-            hourlyRateInput.value = ''; // Clear hourly when annual is edited
+            hourlyRateInput.value = '';
             calculateEarnings();
         });
         annualEarningsEURInput.addEventListener('input', calculateEarnings);
         hoursPerDayInput.addEventListener('input', calculateEarnings);
         daysPerWeekInput.addEventListener('input', calculateEarnings);
+        usdToBrlRateInput.addEventListener('input', calculateEarnings);
+        eurToBrlRateInput.addEventListener('input', calculateEarnings);
+
+        // New event listeners for company type and activity type
+        companyTypeSelect.addEventListener('change', () => {
+            // Show/hide activity type selection based on company type
+            if (companyTypeSelect.value === 'MEI') {
+                activityTypeGroup.classList.add('hidden');
+            } else {
+                activityTypeGroup.classList.remove('hidden');
+            }
+            calculateEarnings();
+        });
+        activityTypeSelect.addEventListener('change', calculateEarnings);
+
 
         // Add event listener for the manual fetch button
         fetchRatesButton.addEventListener('click', fetchCurrencyRates);
 
         // Initial setup on page load
         document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state for activityTypeGroup based on default companyType
+            if (companyTypeSelect.value === 'MEI') {
+                activityTypeGroup.classList.add('hidden');
+            } else {
+                activityTypeGroup.classList.remove('hidden');
+            }
+
             calculateEarnings(); // Initial calculation with default/last known rates
             fetchCurrencyRates(); // Fetch real rates on load
             setInterval(fetchCurrencyRates, 300000); // Update every 5 minutes (300,000 ms)
@@ -517,3 +837,4 @@
     </script>
 </body>
 </html>
+
