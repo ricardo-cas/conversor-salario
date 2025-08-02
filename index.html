@@ -237,10 +237,18 @@
             background-color: #ef4444;
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            padding: 0.5rem;
-            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .additional-expense-item button:hover {
+            background-color: #dc2626;
         }
 
         .add-expense-button {
@@ -445,11 +453,11 @@
             </div>
         </div>
         <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma **simulação simplificada** e
-                não substitui a consulta a um profissional de contabilidade. As alíquotas e regras tributárias no Brasil
-                são complexas e dependem de diversos fatores (CNAE específico, faturamento acumulado real, despesas,
-                etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para garantir a conformidade
-                fiscal da sua empresa, **sempre consulte um contador.**</p>
+            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma <strong>simulação
+                    simplificada</strong> e não substitui a consulta a um profissional de contabilidade. As alíquotas e
+                regras tributárias no Brasil são complexas e dependem de diversos fatores (CNAE específico, faturamento
+                acumulado real, despesas, etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para
+                garantir a conformidade fiscal da sua empresa, <strong>sempre consulte um contador.</strong></p>
             <p>Os valores do DAS-MEI são fixos para 2025 (R$ 76,90 para Comércio/Indústria, R$ 80,90 para Serviços, R$
                 81,90 para Comércio e Serviços). Para ME/EPP, o faturamento anual projetado é usado como base para a
                 alíquota efetiva.</p>
@@ -560,11 +568,12 @@
             </div>
         </div>
         <div class="disclaimer">
-            <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são **estimativas
-                médias** e os cálculos de impostos e INSS são **simulações**. As regras de contribuição, especialmente
-                para quem mora no exterior ou tem regimes tributários específicos, são complexas e exigem a orientação
-                de um contador para um planejamento adequado. Para um cálculo preciso e para garantir seus direitos
-                previdenciários e fiscais, **sempre consulte um profissional.**</p>
+            <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são
+                <strong>estimativas médias</strong> e os cálculos de impostos e INSS são <strong>simulações</strong>. As
+                regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos,
+                são complexas e exigem a orientação de um contador para um planejamento adequado. Para um cálculo
+                preciso e para garantir seus direitos previdenciários e fiscais, <strong>sempre consulte um
+                    profissional.</strong></p>
         </div>
     </div>
 
@@ -580,7 +589,7 @@
         const companyTypeSelect = document.getElementById('companyType');
         const activityTypeSelect = document.getElementById('activityType');
         const activityTypeGroup = document.getElementById('activityTypeGroup');
-        const monthlyGrossSalaryInput = document.getElementById('monthlyGrossSalary'); // New Input
+        const monthlyGrossSalaryInput = document.getElementById('monthlyGrossSalary');
 
         // Get references to currency status elements
         const fetchRatesButton = document.getElementById('fetchRatesButton');
@@ -595,7 +604,7 @@
         const errorDaysPerWeek = document.getElementById('errorDaysPerWeek');
         const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
         const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
-        const errorMonthlyGrossSalary = document.getElementById('errorMonthlyGrossSalary'); // New Error
+        const errorMonthlyGrossSalary = document.getElementById('errorMonthlyGrossSalary');
 
         // Get references to tax results elements
         const taxCompanyType = document.getElementById('taxCompanyType');
@@ -628,12 +637,10 @@
         const finalNetWeeklyBRL = document.getElementById('finalNetWeeklyBRL');
         const finalNetDailyBRL = document.getElementById('finalNetDailyBRL');
 
-
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
         const MONTHLY_WORK_DAYS = 22; // Average working days per month
         const SALARY_MINIMUM_2025 = 1518.00; // Salário mínimo de 2025 (exemplo, pode variar)
-        const AVERAGE_WEEKS_PER_MONTH = 4.33; // Approximately 52 weeks / 12 months
 
         // INSS contribution table for 2025
         const INSS_TABLE_2025 = [
@@ -644,9 +651,6 @@
         ];
 
         // Simples Nacional Tables (Simplified for demonstration) - 2025 values
-        // RBT12: Receita Bruta Total acumulada nos últimos 12 meses
-        // ALIQ: Alíquota nominal
-        // PD: Parcela a deduzir
         const SIMPLES_NACIONAL_TABLES = {
             comercio: [ // Anexo I
                 { rbt12_max: 180000, aliq: 0.04, pd: 0 },
@@ -679,7 +683,6 @@
             adult_33_34_years: 850.00, // Adjusted average for this age range
             child_0_18_years: 350.00 // Average for babies/children
         };
-
 
         // Function to format numbers as currency
         const formatCurrency = (value, currencySymbol, locale = 'pt-BR') => {
@@ -750,6 +753,7 @@
             expenseItem.classList.add('additional-expense-item');
 
             const expenseId = `expense-${Date.now()}`;
+            expenseItem.id = expenseId; // Set ID for easy removal
             expenseItem.innerHTML = `
                 <div class="input-group">
                     <label for="${expenseId}-desc">Descrição:</label>
@@ -802,33 +806,21 @@
             let monthlyINSS = 0;
             let effectivePercentage = 0;
 
-            if (monthlyGrossSalary > 0) {
-                let totalDiscount = 0;
-                let previousMax = 0;
+            const maxSalary = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].max;
+            const salaryToCalculate = Math.min(monthlyGrossSalary, maxSalary);
 
-                INSS_TABLE_2025.forEach(faixa => {
-                    if (monthlyGrossSalary > faixa.min) {
-                        const base = Math.min(monthlyGrossSalary, faixa.max) - faixa.min;
-                        totalDiscount += base * faixa.aliq;
-                        previousMax = faixa.max;
-                    }
-                });
-
-                // Using the simplified formula with parcela a deduzir for the last range
-                const lastRange = INSS_TABLE_2025.find(range => monthlyGrossSalary <= range.max);
+            if (salaryToCalculate > 0) {
+                const lastRange = INSS_TABLE_2025.find(range => salaryToCalculate <= range.max);
                 if (lastRange) {
-                    monthlyINSS = (monthlyGrossSalary * lastRange.aliq) - lastRange.pd;
+                    monthlyINSS = (salaryToCalculate * lastRange.aliq) - lastRange.pd;
                     effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
                 } else {
-                    // For salaries above the table, cap at the last bracket
-                    const maxSalary = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].max;
-                    const maxAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
-                    const maxPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
-
-                    monthlyINSS = (maxSalary * maxAliq) - maxPd;
+                    // For salaries above the table max, use the max values
+                    const lastAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
+                    const lastPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
+                    monthlyINSS = (maxSalary * lastAliq) - lastPd;
                     effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
                 }
-
             }
 
             const totalAnnual = monthlyINSS * 12;
@@ -900,12 +892,11 @@
             }
 
             const netAnnualBRL = annualGrossBRL - taxAmount;
-
             taxGrossAnnualBRL.textContent = formatCurrency(annualGrossBRL, 'R$');
             taxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
             taxPercentage.textContent = `${effectivePercentage.toFixed(2)}%`;
 
-            return { taxAmount, netAnnualBRL };
+            return { taxAmount };
         };
 
 
@@ -915,6 +906,7 @@
             const isValidDaysPerWeek = validateInput(daysPerWeekInput, errorDaysPerWeek, 1, 7, true);
             const isValidUsdToBrlRate = validateInput(usdToBrlRateInput, errorUsdToBrlRate);
             const isValidEurToBrlRate = validateInput(eurToBrlRateInput, errorEurToBrlRate);
+            const isValidMonthlyGrossSalary = validateInput(monthlyGrossSalaryInput, errorMonthlyGrossSalary, 0);
 
             const hoursPerDay = isValidHoursPerDay ? parseFloat(hoursPerDayInput.value) : 0;
             const daysPerWeek = isValidDaysPerWeek ? parseInt(daysPerWeekInput.value) : 0;
@@ -1019,7 +1011,6 @@
             const healthPlanCost = calculateHealthPlanCost();
             const inssCost = calculateINSSCost();
 
-            // Calculate total of additional expenses
             let additionalExpensesTotal = 0;
             document.querySelectorAll('#additionalExpensesContainer input[type="number"]').forEach(input => {
                 if (!isNaN(parseFloat(input.value))) {
@@ -1085,7 +1076,7 @@
             } else {
                 activityTypeGroup.classList.remove('hidden');
             }
-            addExpenseField(); // Add one initial expense field
+
             calculateEarnings();
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
