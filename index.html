@@ -266,6 +266,55 @@
         .add-expense-button:hover {
             background-color: #059669;
         }
+
+        .budget-card {
+            padding: 1.25rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .budget-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .budget-card p {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .budget-card.invest-card {
+            background-color: #e0f2fe;
+        }
+
+        .budget-card.invest-card h3,
+        .budget-card.invest-card p {
+            color: #0c4a6e;
+        }
+
+        .budget-card.fixed-expenses-card {
+            background-color: #fef9e7;
+        }
+
+        .budget-card.fixed-expenses-card h3,
+        .budget-card.fixed-expenses-card p {
+            color: #78350f;
+        }
+
+        .budget-card.personal-expenses-card {
+            background-color: #f3e8ff;
+        }
+
+        .budget-card.personal-expenses-card h3,
+        .budget-card.personal-expenses-card p {
+            color: #581c87;
+        }
     </style>
 </head>
 
@@ -468,7 +517,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="input-group">
                 <label for="monthlyGrossSalary">Salário Bruto Mensal (para INSS):</label>
-                <input type="number" id="monthlyGrossSalary" value="8000.00" step="0.01" min="0" class="w-full">
+                <!-- Salário Mínimo 2025: R$ 1.518,00 -->
+                <input type="number" id="monthlyGrossSalary" value="1518.00" step="0.01" min="0" class="w-full">
                 <p id="errorMonthlyGrossSalary" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
         </div>
@@ -567,7 +617,31 @@
                 </div>
             </div>
         </div>
+
+        <h2 class="section-title mt-8">Sugestão de Concentração de Ganhos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="budget-card invest-card">
+                <h3>70% para Poupar / Investir</h3>
+                <p id="budgetInvestment">R$0.00</p>
+                <p class="text-sm text-gray-500">Reserva de emergência, aposentadoria, etc.</p>
+            </div>
+            <div class="budget-card fixed-expenses-card">
+                <h3>20% para Despesas Fixas</h3>
+                <p id="budgetFixedExpenses">R$0.00</p>
+                <p class="text-sm text-gray-500">Aluguel, contas, etc.</p>
+            </div>
+            <div class="budget-card personal-expenses-card">
+                <h3>10% para Gastos Pessoais</h3>
+                <p id="budgetPersonalExpenses">R$0.00</p>
+                <p class="text-sm text-gray-500">Lazer, hobbies, etc.</p>
+            </div>
+        </div>
         <div class="disclaimer">
+            <p><strong>Aviso Importante:</strong> Esta é uma sugestão de concentração de ganhos, com base na regra
+                70/20/10, para facilitar o seu planejamento financeiro. Antes de investir, é crucial construir uma
+                <strong>reserva de emergência</strong>, que pode cobrir de 6 a 12 meses das suas despesas mensais. O
+                valor para despesas fixas (20%) e gastos pessoais (10%) pode ser ajustado de acordo com a sua realidade.
+            </p>
             <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são
                 <strong>estimativas médias</strong> e os cálculos de impostos e INSS são <strong>simulações</strong>. As
                 regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos,
@@ -636,6 +710,11 @@
         const finalNetMonthlyBRL = document.getElementById('finalNetMonthlyBRL');
         const finalNetWeeklyBRL = document.getElementById('finalNetWeeklyBRL');
         const finalNetDailyBRL = document.getElementById('finalNetDailyBRL');
+
+        // Get references to budget suggestion elements
+        const budgetInvestment = document.getElementById('budgetInvestment');
+        const budgetFixedExpenses = document.getElementById('budgetFixedExpenses');
+        const budgetPersonalExpenses = document.getElementById('budgetPersonalExpenses');
 
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
@@ -1037,6 +1116,17 @@
             finalNetMonthlyBRL.textContent = formatCurrency(finalNetMonthly, 'R$');
             finalNetWeeklyBRL.textContent = formatCurrency(finalNetWeekly, 'R$');
             finalNetDailyBRL.textContent = formatCurrency(finalNetDaily, 'R$');
+
+            // Calculate and display budget suggestions
+            const netMonthlyForBudget = finalNetMonthly;
+
+            const investmentAmount = netMonthlyForBudget * 0.7;
+            const fixedExpensesAmount = netMonthlyForBudget * 0.2;
+            const personalExpensesAmount = netMonthlyForBudget * 0.1;
+
+            budgetInvestment.textContent = formatCurrency(investmentAmount, 'R$');
+            budgetFixedExpenses.textContent = formatCurrency(fixedExpensesAmount, 'R$');
+            budgetPersonalExpenses.textContent = formatCurrency(personalExpensesAmount, 'R$');
         };
 
         // Event Listeners
@@ -1076,7 +1166,7 @@
             } else {
                 activityTypeGroup.classList.remove('hidden');
             }
-
+            addExpenseField(); // Add one initial expense field
             calculateEarnings();
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
