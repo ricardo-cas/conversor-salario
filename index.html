@@ -4,1174 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Ganhos</title>
-
-    <!-- Metadados para SEO e Compartilhamento em Redes Sociais -->
-    <meta name="author" content="Ricardo Costa Alves dos Santos">
-    <meta name="description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta name="keywords"
-        content="calculadora de ganhos, salário, dólar, euro, real, cotação de moeda, finanças pessoais, jornada de trabalho, conversor de moeda, ganhos por hora, ganhos anuais">
-
-    <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://conversor-salario.vercel.app/">
-    <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
-    <meta property="og:title" content="Calculadora de Ganhos - Dólar, Euro e Real">
-    <meta property="og:description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta property="og:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos">
-    <!-- Imagem de prévia para compartilhamento -->
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://conversor-salario.vercel.app/">
-    <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
-    <meta name="twitter:title" content="Calculadora de Ganhos - Dólar, Euro e Real">
-    <meta name="twitter:description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta name="twitter:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos">
-    <!-- Imagem de prévia para compartilhamento -->
-    <!-- <meta name="twitter:creator" content="@seu_twitter_aqui"> OPCIONAL: Adicione seu @ do Twitter, se tiver. -->
-
-    <!-- Favicon (Ícone da aba do navegador) -->
+    <title>Converta e Planeje</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#xf1ec;</text></svg>">
-    <!-- Ícone de calculadora Font Awesome -->
-
-    <!-- Vercel Analytics -->
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script src="/_vercel/insights/script.js"></script>
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            /* Light blue-gray background */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            /* Align to top for better scrollability */
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            /* More rounded corners */
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            max-width: 900px;
-            /* Increased max-width */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .input-group label {
-            font-weight: 600;
-            color: #334155;
-            /* Darker text for labels */
-        }
-
-        .input-group input,
-        .input-group select {
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            /* Light gray border */
-            border-radius: 0.75rem;
-            /* Rounded input fields */
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            /* Blue focus border */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-            /* Light blue shadow on focus */
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            /* Responsive grid */
-            gap: 1.5rem;
-        }
-
-        .result-card {
-            background-color: #eff6ff;
-            /* Very light blue background */
-            padding: 1.25rem;
-            border-radius: 1rem;
-            /* Rounded cards */
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .result-card h3 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #1e40af;
-            /* Darker blue for titles */
-            margin-bottom: 0.5rem;
-        }
-
-        .result-card p {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1d4ed8;
-            /* Stronger blue for values */
-        }
-
-        .section-title {
-            font-size: 1.75rem;
-            /* Larger title */
-            font-weight: 700;
-            color: #1e293b;
-            /* Dark title color */
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .subsection-title {
-            font-size: 1.25rem;
-            /* Sub-section title */
-            font-weight: 600;
-            color: #334155;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            width: 100%;
-            /* Ensure it spans full width in its grid */
-            grid-column: 1 / -1;
-            /* Make it span all columns in a grid */
-        }
-
-        .error-message {
-            color: #ef4444;
-            /* Red error message */
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
-        .currency-status {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #475569;
-        }
-
-        .currency-status button {
-            background-color: #3b82f6;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-
-        .currency-status button:hover {
-            background-color: #2563eb;
-        }
-
-        .currency-status .loading-indicator {
-            color: #1d4ed8;
-            font-weight: 600;
-        }
-
-        .disclaimer {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            background-color: #f8fafc;
-        }
-
-        .additional-expenses-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .additional-expense-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr 40px;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .additional-expense-item input[type="text"] {
-            width: 100%;
-        }
-
-        .additional-expense-item input[type="number"] {
-            width: 100%;
-        }
-
-        .additional-expense-item button {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-        }
-
-        .additional-expense-item button:hover {
-            background-color: #dc2626;
-        }
-
-        .add-expense-button {
-            background-color: #10b981;
-            color: white;
-            border: none;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 1rem;
-        }
-
-        .add-expense-button:hover {
-            background-color: #059669;
-        }
-
-        .budget-card {
-            padding: 1.25rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .budget-card h3 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .budget-card p {
-            font-size: 1.5rem;
-            font-weight: 800;
-        }
-
-        .budget-card.invest-card {
-            background-color: #e0f2fe;
-        }
-
-        .budget-card.invest-card h3,
-        .budget-card.invest-card p {
-            color: #0c4a6e;
-        }
-
-        .budget-card.fixed-expenses-card {
-            background-color: #fef9e7;
-        }
-
-        .budget-card.fixed-expenses-card h3,
-        .budget-card.fixed-expenses-card p {
-            color: #78350f;
-        }
-
-        .budget-card.personal-expenses-card {
-            background-color: #f3e8ff;
-        }
-
-        .budget-card.personal-expenses-card h3,
-        .budget-card.personal-expenses-card p {
-            color: #581c87;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
-    <div class="container">
-        <h1 class="section-title">Calculadora de Ganhos</h1>
+<body class="bg-gray-100 text-gray-800">
 
-        <!-- Seção de Entradas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="input-group">
-                <label for="hourlyRate">Valor Hora (USD):</label>
-                <input type="number" id="hourlyRate" value="44" step="0.01" min="0" class="w-full">
-                <p id="errorHourlyRate" class="error-message hidden">Por favor, insira um número válido.</p>
-            </div>
-            <div class="input-group">
-                <label for="annualEarningsUSD">Ganhos Anuais (USD):</label>
-                <input type="number" id="annualEarningsUSD" value="" step="0.01" min="0" class="w-full"
-                    placeholder="Opcional">
-                <p id="errorAnnualEarningsUSD" class="error-message hidden">Por favor, insira um número válido.</p>
-            </div>
-            <div class="input-group">
-                <label for="annualEarningsEUR">Ganhos Anuais (EUR):</label>
-                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full"
-                    placeholder="Opcional">
-                <p id="errorAnnualEarningsEUR" class="error-message hidden">Por favor, insira um número válido.</p>
-            </div>
-            <div class="input-group">
-                <label for="hoursPerDay">Horas por Dia:</label>
-                <input type="number" id="hoursPerDay" value="8" step="0.5" min="0" max="24" class="w-full">
-                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido entre 0 e 24.
-                </p>
-            </div>
-            <div class="input-group">
-                <label for="daysPerWeek">Dias por Semana (1-7):</label>
-                <input type="number" id="daysPerWeek" value="5" step="1" min="1" max="7" class="w-full">
-                <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número inteiro entre 1 e 7.
-                </p>
-            </div>
-            <div class="input-group">
-                <label for="companyType">Tipo de Empresa:</label>
-                <select id="companyType" class="w-full">
-                    <option value="MEI">MEI (Microempreendedor Individual)</option>
-                    <option value="ME" selected>ME (Microempresa)</option>
-                    <option value="EPP">EPP (Empresa de Pequeno Porte)</option>
-                </select>
-            </div>
-            <div class="input-group" id="activityTypeGroup">
-                <label for="activityType">Tipo de Atividade (para ME/EPP):</label>
-                <select id="activityType" class="w-full">
-                    <option value="comercio">Comércio (Anexo I)</option>
-                    <option value="servicos_geral" selected>Serviços (Geral - Anexo III)</option>
-                    <option value="servicos_intelectual">Serviços (Intelectual/Alto Fator R - Anexo V)</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
-                <input type="number" id="usdToBrlRate" value="5.58" step="0.001" min="0" class="w-full" disabled>
-                <!-- Disabled for API control -->
-                <p id="errorUsdToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
-            </div>
-            <div class="input-group">
-                <label for="eurToBrlRate">Taxa de Câmbio (EUR para BRL):</label>
-                <input type="number" id="eurToBrlRate" value="6.00" step="0.001" min="0" class="w-full" disabled>
-                <!-- Disabled for API control -->
-                <p id="errorEurToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-indigo-600">Converta e Planeje</a>
+            <div class="flex items-center">
+                <a href="./app.html"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                    Ir para a Calculadora
+                </a>
             </div>
         </div>
+    </nav>
 
-        <div class="currency-status">
-            <button id="fetchRatesButton">Atualizar Cotações</button>
-            <span id="loadingIndicator" class="loading-indicator hidden">Atualizando cotações...</span>
-            <span>Última atualização: <span id="lastUpdated">--:--</span></span>
-        </div>
-
-        <!-- Seção de Resultados USD -->
-        <h2 class="section-title mt-8">Resultados em Dólar Americano (USD)</h2>
-        <div class="results-grid">
-            <div class="result-card">
-                <h3>Diário</h3>
-                <p id="dailyUSD">$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Semanal</h3>
-                <p id="weeklyUSD">$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Mensal</h3>
-                <p id="monthlyUSD">$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Anual</h3>
-                <p id="annualUSD">$0.00</p>
-            </div>
-        </div>
-
-        <!-- Seção de Resultados EUR -->
-        <h2 class="section-title mt-8">Resultados em Euro (€)</h2>
-        <div class="results-grid">
-            <div class="result-card">
-                <h3>Diário</h3>
-                <p id="dailyEUR">€0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Semanal</h3>
-                <p id="weeklyEUR">€0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Mensal</h3>
-                <p id="monthlyEUR">€0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Anual</h3>
-                <p id="annualEUR">€0.00</p>
-            </div>
-        </div>
-
-        <!-- Seção de Resultados BRL -->
-        <h2 class="section-title mt-8">Resultados em Real Brasileiro (BRL)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- BRL Equivalente USD -->
-            <div>
-                <h3 class="subsection-title">Equivalente ao Dólar Americano (USD)</h3>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h3>Diário</h3>
-                        <p id="dailyBRL_USD">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Semanal</h3>
-                        <p id="weeklyBRL_USD">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Mensal</h3>
-                        <p id="monthlyBRL_USD">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Anual</h3>
-                        <p id="annualBRL_USD">R$0.00</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BRL Equivalente EUR -->
-            <div>
-                <h3 class="subsection-title">Equivalente ao Euro (€)</h3>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h3>Diário</h3>
-                        <p id="dailyBRL_EUR">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Semanal</h3>
-                        <p id="weeklyBRL_EUR">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Mensal</h3>
-                        <p id="monthlyBRL_EUR">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Anual</h3>
-                        <p id="annualBRL_EUR">R$0.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nova Seção de Impostos -->
-        <h2 class="section-title mt-8">Simulação de Impostos (BRL)</h2>
-        <div class="results-grid">
-            <div class="result-card">
-                <h3>Tipo de Empresa</h3>
-                <p id="taxCompanyType">N/A</p>
-            </div>
-            <div class="result-card">
-                <h3>Faturamento Anual Bruto (BRL)</h3>
-                <p id="taxGrossAnnualBRL">R$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Imposto Anual Estimado (BRL)</h3>
-                <p id="taxAmountBRL">R$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>% Efetiva de Imposto</h3>
-                <p id="taxPercentage">0.00%</p>
-            </div>
-        </div>
-        <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma <strong>simulação
-                    simplificada</strong> e não substitui a consulta a um profissional de contabilidade. As alíquotas e
-                regras tributárias no Brasil são complexas e dependem de diversos fatores (CNAE específico, faturamento
-                acumulado real, despesas, etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para
-                garantir a conformidade fiscal da sua empresa, <strong>sempre consulte um contador.</strong></p>
-            <p>Os valores do DAS-MEI são fixos para 2025 (R$ 76,90 para Comércio/Indústria, R$ 80,90 para Serviços, R$
-                81,90 para Comércio e Serviços). Para ME/EPP, o faturamento anual projetado é usado como base para a
-                alíquota efetiva.</p>
-        </div>
-
-        <!-- Nova Seção de Plano de Saúde e Líquido Final -->
-        <h2 class="section-title mt-8">Simulação de Despesas Mensais (BRL)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="input-group">
-                <label for="monthlyGrossSalary">Salário Bruto Mensal (para INSS):</label>
-                <!-- Salário Mínimo 2025: R$ 1.518,00 -->
-                <input type="number" id="monthlyGrossSalary" value="1518.00" step="0.01" min="0" class="w-full">
-                <p id="errorMonthlyGrossSalary" class="error-message hidden">Por favor, insira um número válido.</p>
-            </div>
-        </div>
-        <div class="results-grid">
-            <div class="result-card">
-                <h3>Plano de Saúde Adulto 1</h3>
-                <p id="healthPlanAdult1Cost">R$0.00/mês</p>
-            </div>
-            <div class="result-card">
-                <h3>Plano de Saúde Adulto 2</h3>
-                <p id="healthPlanAdult2Cost">R$0.00/mês</p>
-            </div>
-            <div class="result-card">
-                <h3>Plano de Saúde Filho</h3>
-                <p id="healthPlanChildCost">R$0.00/mês</p>
-            </div>
-            <div class="result-card">
-                <h3>Contribuição Mensal INSS</h3>
-                <p id="inssMonthlyCost">R$0.00/mês</p>
-            </div>
-            <div class="result-card">
-                <h3>% Efetiva INSS</h3>
-                <p id="inssPercentage">0.00%</p>
-            </div>
-            <div class="result-card">
-                <h3>Custo Anual do Plano</h3>
-                <p id="healthPlanTotalAnnual">R$0.00</p>
-            </div>
-            <div class="result-card">
-                <h3>Custo Anual INSS</h3>
-                <p id="inssTotalAnnual">R$0.00</p>
-            </div>
-        </div>
-
-        <h3 class="subsection-title mt-8">Outras Despesas Mensais</h3>
-        <div id="additionalExpensesContainer" class="additional-expenses-list">
-            <!-- Expense items will be added here -->
-        </div>
-        <button id="addExpenseButton" class="add-expense-button">
-            <i class="fas fa-plus"></i> Adicionar Despesa
-        </button>
-
-        <h2 class="section-title mt-8">Resumo de Ganhos Líquidos (BRL)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Coluna de Custos -->
-            <div>
-                <h3 class="subsection-title">Custos Totais Anuais</h3>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h3>Impostos Anuais</h3>
-                        <p id="finalTaxAmountBRL">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Plano de Saúde Anual</h3>
-                        <p id="finalHealthPlanCost">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>INSS Anual</h3>
-                        <p id="finalINSSCost">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Outras Despesas Anuais</h3>
-                        <p id="finalAdditionalExpensesCost">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Total de Despesas Anuais</h3>
-                        <p id="finalTotalDeductions">R$0.00</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Coluna de Ganhos Líquidos -->
-            <div>
-                <h3 class="subsection-title">Ganhos Líquidos Finais</h3>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h3>Ganhos Brutos Anuais</h3>
-                        <p id="finalGrossAnnualBRL">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Ganhos Líquidos Anuais</h3>
-                        <p id="finalNetAnnualBRL">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Ganhos Líquidos Mensais</h3>
-                        <p id="finalNetMonthlyBRL">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Ganhos Líquidos Semanais</h3>
-                        <p id="finalNetWeeklyBRL">R$0.00</p>
-                    </div>
-                    <div class="result-card">
-                        <h3>Ganhos Líquidos Diários</h3>
-                        <p id="finalNetDailyBRL">R$0.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title mt-8">Sugestão de Concentração de Ganhos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="budget-card invest-card">
-                <h3>70% para Poupar / Investir</h3>
-                <p id="budgetInvestment">R$0.00</p>
-                <p class="text-sm text-gray-500">Reserva de emergência, aposentadoria, etc.</p>
-            </div>
-            <div class="budget-card fixed-expenses-card">
-                <h3>20% para Despesas Fixas</h3>
-                <p id="budgetFixedExpenses">R$0.00</p>
-                <p class="text-sm text-gray-500">Aluguel, contas, etc.</p>
-            </div>
-            <div class="budget-card personal-expenses-card">
-                <h3>10% para Gastos Pessoais</h3>
-                <p id="budgetPersonalExpenses">R$0.00</p>
-                <p class="text-sm text-gray-500">Lazer, hobbies, etc.</p>
-            </div>
-        </div>
-        <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta é uma sugestão de concentração de ganhos, com base na regra
-                70/20/10, para facilitar o seu planejamento financeiro. Antes de investir, é crucial construir uma
-                <strong>reserva de emergência</strong>, que pode cobrir de 6 a 12 meses das suas despesas mensais. O
-                valor para despesas fixas (20%) e gastos pessoais (10%) pode ser ajustado de acordo com a sua realidade.
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-4">
+                Finalmente, uma maneira clara de gerenciar seus ganhos.
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90">
+                Seu salário em Dólar ou Euro, convertido para a realidade brasileira, com impostos, despesas e um plano
+                de orçamento.
             </p>
-            <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são
-                <strong>estimativas médias</strong> e os cálculos de impostos e INSS são <strong>simulações</strong>. As
-                regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos,
-                são complexas e exigem a orientação de um contador para um planejamento adequado. Para um cálculo
-                preciso e para garantir seus direitos previdenciários e fiscais, <strong>sempre consulte um
-                    profissional.</strong></p>
+            <a href="app.html"
+                class="bg-yellow-400 text-purple-800 font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:bg-yellow-300 transform hover:scale-105">
+                Começar agora!
+            </a>
         </div>
-    </div>
+    </header>
 
-    <script>
-        // Get references to input elements
-        const hourlyRateInput = document.getElementById('hourlyRate');
-        const annualEarningsUSDInput = document.getElementById('annualEarningsUSD');
-        const annualEarningsEURInput = document.getElementById('annualEarningsEUR');
-        const hoursPerDayInput = document.getElementById('hoursPerDay');
-        const daysPerWeekInput = document.getElementById('daysPerWeek');
-        const usdToBrlRateInput = document.getElementById('usdToBrlRate');
-        const eurToBrlRateInput = document.getElementById('eurToBrlRate');
-        const companyTypeSelect = document.getElementById('companyType');
-        const activityTypeSelect = document.getElementById('activityType');
-        const activityTypeGroup = document.getElementById('activityTypeGroup');
-        const monthlyGrossSalaryInput = document.getElementById('monthlyGrossSalary');
-
-        // Get references to currency status elements
-        const fetchRatesButton = document.getElementById('fetchRatesButton');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const lastUpdatedSpan = document.getElementById('lastUpdated');
-
-        // Get references to error message elements
-        const errorHourlyRate = document.getElementById('errorHourlyRate');
-        const errorAnnualEarningsUSD = document.getElementById('errorAnnualEarningsUSD');
-        const errorAnnualEarningsEUR = document.getElementById('errorAnnualEarningsEUR');
-        const errorHoursPerDay = document.getElementById('errorHoursPerDay');
-        const errorDaysPerWeek = document.getElementById('errorDaysPerWeek');
-        const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
-        const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
-        const errorMonthlyGrossSalary = document.getElementById('errorMonthlyGrossSalary');
-
-        // Get references to tax results elements
-        const taxCompanyType = document.getElementById('taxCompanyType');
-        const taxGrossAnnualBRL = document.getElementById('taxGrossAnnualBRL');
-        const taxAmountBRL = document.getElementById('taxAmountBRL');
-        const taxPercentage = document.getElementById('taxPercentage');
-
-        // Get references to health plan results elements
-        const healthPlanAdult1Cost = document.getElementById('healthPlanAdult1Cost');
-        const healthPlanAdult2Cost = document.getElementById('healthPlanAdult2Cost');
-        const healthPlanChildCost = document.getElementById('healthPlanChildCost');
-        const healthPlanTotalAnnual = document.getElementById('healthPlanTotalAnnual');
-        const inssMonthlyCost = document.getElementById('inssMonthlyCost');
-        const inssPercentage = document.getElementById('inssPercentage');
-        const inssTotalAnnual = document.getElementById('inssTotalAnnual');
-
-        // Get references to additional expenses elements
-        const additionalExpensesContainer = document.getElementById('additionalExpensesContainer');
-        const addExpenseButton = document.getElementById('addExpenseButton');
-
-        // Get references to final net results elements
-        const finalGrossAnnualBRL = document.getElementById('finalGrossAnnualBRL');
-        const finalTaxAmountBRL = document.getElementById('finalTaxAmountBRL');
-        const finalINSSCost = document.getElementById('finalINSSCost');
-        const finalHealthPlanCost = document.getElementById('finalHealthPlanCost');
-        const finalAdditionalExpensesCost = document.getElementById('finalAdditionalExpensesCost');
-        const finalTotalDeductions = document.getElementById('finalTotalDeductions');
-        const finalNetAnnualBRL = document.getElementById('finalNetAnnualBRL');
-        const finalNetMonthlyBRL = document.getElementById('finalNetMonthlyBRL');
-        const finalNetWeeklyBRL = document.getElementById('finalNetWeeklyBRL');
-        const finalNetDailyBRL = document.getElementById('finalNetDailyBRL');
-
-        // Get references to budget suggestion elements
-        const budgetInvestment = document.getElementById('budgetInvestment');
-        const budgetFixedExpenses = document.getElementById('budgetFixedExpenses');
-        const budgetPersonalExpenses = document.getElementById('budgetPersonalExpenses');
-
-        // Constants for calculations
-        const WEEKS_PER_YEAR = 52;
-        const MONTHLY_WORK_DAYS = 22; // Average working days per month
-        const SALARY_MINIMUM_2025 = 1518.00; // Salário mínimo de 2025 (exemplo, pode variar)
-
-        // INSS contribution table for 2025
-        const INSS_TABLE_2025 = [
-            { min: 0, max: 1518.00, aliq: 0.075, pd: 0 },
-            { min: 1518.01, max: 2793.88, aliq: 0.09, pd: 22.77 },
-            { min: 2793.89, max: 4190.83, aliq: 0.12, pd: 106.59 },
-            { min: 4190.84, max: 8157.41, aliq: 0.14, pd: 190.40 }
-        ];
-
-        // Simples Nacional Tables (Simplified for demonstration) - 2025 values
-        const SIMPLES_NACIONAL_TABLES = {
-            comercio: [ // Anexo I
-                { rbt12_max: 180000, aliq: 0.04, pd: 0 },
-                { rbt12_max: 360000, aliq: 0.073, pd: 5940 },
-                { rbt12_max: 720000, aliq: 0.095, pd: 13860 },
-                { rbt12_max: 1800000, aliq: 0.107, pd: 22500 },
-                { rbt12_max: 3600000, aliq: 0.143, pd: 87300 },
-                { rbt12_max: 4800000, aliq: 0.19, pd: 378000 }
-            ],
-            servicos_geral: [ // Anexo III
-                { rbt12_max: 180000, aliq: 0.06, pd: 0 },
-                { rbt12_max: 360000, aliq: 0.112, pd: 9360 },
-                { rbt12_max: 720000, aliq: 0.135, pd: 17640 },
-                { rbt12_max: 1800000, aliq: 0.16, pd: 35640 },
-                { rbt12_max: 3600000, aliq: 0.21, pd: 125640 },
-                { rbt12_max: 4800000, aliq: 0.33, pd: 648000 }
-            ],
-            servicos_intelectual: [ // Anexo V (Alto Fator R - simplificado, sem cálculo do Fator R)
-                { rbt12_max: 180000, aliq: 0.155, pd: 0 },
-                { rbt12_max: 360000, aliq: 0.18, pd: 4500 },
-                { rbt12_max: 720000, aliq: 0.195, pd: 9900 },
-                { rbt12_max: 1800000, aliq: 0.205, pd: 17100 },
-                { rbt12_max: 3600000, aliq: 0.23, pd: 62100 },
-                { rbt12_max: 4800000, aliq: 0.305, pd: 540000 }
-            ]
-        };
-
-        // Health Plan Costs (Monthly Estimates based on research)
-        const HEALTH_PLAN_COSTS = {
-            adult_33_34_years: 850.00, // Adjusted average for this age range
-            child_0_18_years: 350.00 // Average for babies/children
-        };
-
-        // Function to format numbers as currency
-        const formatCurrency = (value, currencySymbol, locale = 'pt-BR') => {
-            if (isNaN(value) || value === null || value === undefined) {
-                return `${currencySymbol}0.00`;
-            }
-            return new Intl.NumberFormat(locale, {
-                style: 'currency',
-                currency: currencySymbol === '$' ? 'USD' : (currencySymbol === '€' ? 'EUR' : 'BRL')
-            }).format(value);
-        };
-
-        // Function to validate input and show/hide error messages
-        const validateInput = (inputElement, errorElement, min = 0, max = Infinity, isInteger = false) => {
-            const value = inputElement.value.trim();
-
-            if (value === '') {
-                errorElement.classList.add('hidden');
-                return true;
-            }
-
-            const parsedValue = parseFloat(value);
-
-            if (isNaN(parsedValue) || parsedValue < min || parsedValue > max || (isInteger && parsedValue % 1 !== 0)) {
-                errorElement.classList.remove('hidden');
-                return false;
-            } else {
-                errorElement.classList.add('hidden');
-                return true;
-            }
-        };
-
-        // Function to fetch currency rates from API
-        const fetchCurrencyRates = async () => {
-            loadingIndicator.classList.remove('hidden');
-            fetchRatesButton.disabled = true;
-            try {
-                const response = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL');
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP! Status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                const usdRate = parseFloat(data.USDBRL.high);
-                const eurRate = parseFloat(data.EURBRL.high);
-
-                if (!isNaN(usdRate) && !isNaN(eurRate)) {
-                    usdToBrlRateInput.value = usdRate.toFixed(3);
-                    eurToBrlRateInput.value = eurRate.toFixed(3);
-                    lastUpdatedSpan.textContent = new Date().toLocaleTimeString('pt-BR');
-                    calculateEarnings();
-                } else {
-                    console.error('A resposta da API não contém cotações de moeda válidas.');
-                    lastUpdatedSpan.textContent = 'Erro ao carregar cotações.';
-                }
-            } catch (error) {
-                console.error('Erro ao buscar cotações:', error);
-                lastUpdatedSpan.textContent = 'Erro ao carregar cotações.';
-            } finally {
-                loadingIndicator.classList.add('hidden');
-                fetchRatesButton.disabled = false;
-            }
-        };
-
-        // Function to add a new expense field
-        const addExpenseField = () => {
-            const expenseItem = document.createElement('div');
-            expenseItem.classList.add('additional-expense-item');
-
-            const expenseId = `expense-${Date.now()}`;
-            expenseItem.id = expenseId; // Set ID for easy removal
-            expenseItem.innerHTML = `
-                <div class="input-group">
-                    <label for="${expenseId}-desc">Descrição:</label>
-                    <input type="text" id="${expenseId}-desc" class="w-full">
+    <!-- Problem Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12">Você se identifica com esta situação?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="bg-white p-8 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                    <i class="fas fa-question-circle text-4xl text-indigo-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Incerteza Financeira</h3>
+                    <p class="text-gray-600">Receber em moeda estrangeira, mas nunca saber o valor real que irá para sua
+                        conta no final do mês.</p>
                 </div>
-                <div class="input-group">
-                    <label for="${expenseId}-value">Valor Mensal (BRL):</label>
-                    <input type="number" id="${expenseId}-value" value="0" step="0.01" min="0" class="w-full">
+                <div class="bg-white p-8 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                    <i class="fas fa-chart-line text-4xl text-indigo-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Cálculos Complexos</h3>
+                    <p class="text-gray-600">Perder tempo com planilhas e calculadoras genéricas, tentando entender o
+                        impacto de impostos e taxas.</p>
                 </div>
-                <button type="button" onclick="removeExpenseField('${expenseId}')"><i class="fas fa-times"></i></button>
-            `;
-            additionalExpensesContainer.appendChild(expenseItem);
+                <div class="bg-white p-8 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                    <i class="fas fa-exclamation-triangle text-4xl text-indigo-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Planejamento Frustrado</h3>
+                    <p class="text-gray-600">Não conseguir planejar a longo prazo porque faltam informações claras sobre
+                        seus ganhos líquidos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            // Add event listeners to new inputs
-            const newExpenseInput = document.getElementById(`${expenseId}-value`);
-            newExpenseInput.addEventListener('input', calculateEarnings);
-        };
+    <!-- Solution Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Sua jornada para a clareza financeira começa aqui.</h2>
+            <p class="text-lg text-gray-600 mb-12">A <strong>Converta e Planeje</strong> foi feita para você, o(a)
+                herói(na) que está
+                construindo um futuro sólido.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div
+                    class="flex flex-col items-center p-6 bg-gray-100 rounded-lg transform transition duration-300 hover:scale-105">
+                    <span class="text-5xl font-bold text-green-500">1</span>
+                    <h3 class="text-xl font-semibold mt-4">Converta com Precisão</h3>
+                    <p class="text-gray-600 mt-2">Veja seus ganhos em Dólar e Euro com a cotação real e atualizada.</p>
+                </div>
+                <div
+                    class="flex flex-col items-center p-6 bg-gray-100 rounded-lg transform transition duration-300 hover:scale-105">
+                    <span class="text-5xl font-bold text-green-500">2</span>
+                    <h3 class="text-xl font-semibold mt-4">Simule Seus Impostos</h3>
+                    <p class="text-gray-600 mt-2">Calcule os impostos do Simples Nacional de forma simplificada e
+                        entenda seu impacto.</p>
+                </div>
+                <div
+                    class="flex flex-col items-center p-6 bg-gray-100 rounded-lg transform transition duration-300 hover:scale-105">
+                    <span class="text-5xl font-bold text-green-500">3</span>
+                    <h3 class="text-xl font-semibold mt-4">Gerencie Suas Despesas</h3>
+                    <p class="text-gray-600 mt-2">Adicione custos de plano de saúde, INSS e outras despesas para ter o
+                        valor líquido exato.</p>
+                </div>
+                <div
+                    class="flex flex-col items-center p-6 bg-gray-100 rounded-lg transform transition duration-300 hover:scale-105">
+                    <span class="text-5xl font-bold text-green-500">4</span>
+                    <h3 class="text-xl font-semibold mt-4">Planeje o Futuro</h3>
+                    <p class="text-gray-600 mt-2">Use a sugestão de orçamento para poupar e investir com inteligência,
+                        focando na sua aposentadoria.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // Function to remove an expense field
-        window.removeExpenseField = (id) => {
-            const expenseElement = document.getElementById(id);
-            if (expenseElement) {
-                expenseElement.remove();
-                calculateEarnings(); // Recalculate after removing
-            }
-        };
+    <!-- Call to Action -->
+    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 text-center">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Pronto para tomar o controle das suas finanças?</h2>
+            <p class="text-xl md:text-2xl mb-8">
+                Milhares de profissionais já estão usando a <strong>Converta e Planeje</strong> para ter mais segurança
+                e clareza.
+            </p>
+            <a href="app.html"
+                class="bg-yellow-400 text-purple-800 font-bold py-3 px-10 rounded-full text-lg transition duration-300 hover:bg-yellow-300 transform hover:scale-105">
+                Experimente a Calculadora Agora
+            </a>
+        </div>
+    </section>
 
-        // Function to calculate health plan cost
-        const calculateHealthPlanCost = () => {
-            const adult1Cost = HEALTH_PLAN_COSTS.adult_33_34_years;
-            const adult2Cost = HEALTH_PLAN_COSTS.adult_33_34_years;
-            const childCost = HEALTH_PLAN_COSTS.child_0_18_years;
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Converta e Planeje. Todos os direitos reservados.</p>
+            <p class="mt-2 text-sm">Desenvolvido por Ricardo Costa Alves dos Santos.</p>
+        </div>
+    </footer>
 
-            const totalMonthly = adult1Cost + adult2Cost + childCost;
-            const totalAnnual = totalMonthly * 12;
-
-            healthPlanAdult1Cost.textContent = formatCurrency(adult1Cost, 'R$') + '/mês';
-            healthPlanAdult2Cost.textContent = formatCurrency(adult2Cost, 'R$') + '/mês';
-            healthPlanChildCost.textContent = formatCurrency(childCost, 'R$') + '/mês';
-            healthPlanTotalAnnual.textContent = formatCurrency(totalAnnual, 'R$');
-
-            return totalAnnual;
-        };
-
-        // Function to calculate INSS cost
-        const calculateINSSCost = () => {
-            const isValidMonthlyGrossSalary = validateInput(monthlyGrossSalaryInput, errorMonthlyGrossSalary, 0);
-            const monthlyGrossSalary = isValidMonthlyGrossSalary ? parseFloat(monthlyGrossSalaryInput.value) : 0;
-
-            let monthlyINSS = 0;
-            let effectivePercentage = 0;
-
-            const maxSalary = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].max;
-            const salaryToCalculate = Math.min(monthlyGrossSalary, maxSalary);
-
-            if (salaryToCalculate > 0) {
-                const lastRange = INSS_TABLE_2025.find(range => salaryToCalculate <= range.max);
-                if (lastRange) {
-                    monthlyINSS = (salaryToCalculate * lastRange.aliq) - lastRange.pd;
-                    effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
-                } else {
-                    // For salaries above the table max, use the max values
-                    const lastAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
-                    const lastPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
-                    monthlyINSS = (maxSalary * lastAliq) - lastPd;
-                    effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
-                }
-            }
-
-            const totalAnnual = monthlyINSS * 12;
-            inssMonthlyCost.textContent = formatCurrency(monthlyINSS, 'R$') + '/mês';
-            inssTotalAnnual.textContent = formatCurrency(totalAnnual, 'R$');
-            inssPercentage.textContent = `${effectivePercentage.toFixed(2)}%`;
-
-            return totalAnnual;
-        };
-
-        // Function to calculate taxes
-        const calculateTaxes = (annualGrossBRL, companyType, activityType) => {
-            let taxAmount = 0;
-            let effectivePercentage = 0;
-            const MEI_LIMIT = 81000;
-
-            taxCompanyType.textContent = companyType.toUpperCase();
-
-            if (companyType === 'MEI') {
-                if (annualGrossBRL > MEI_LIMIT) {
-                    taxAmount = annualGrossBRL * 0.06;
-                    effectivePercentage = 6;
-                    taxCompanyType.textContent += " (Acima do Limite MEI - Simulação ME)";
-                } else {
-                    let monthlyDAS = 0;
-                    if (activityType === 'comercio') {
-                        monthlyDAS = SALARY_MINIMUM_2025 * 0.05 + 1;
-                    } else if (activityType === 'servicos_geral' || activityType === 'servicos_intelectual') {
-                        monthlyDAS = SALARY_MINIMUM_2025 * 0.05 + 5;
-                    }
-                    taxAmount = monthlyDAS * 12;
-                    effectivePercentage = (annualGrossBRL > 0) ? (taxAmount / annualGrossBRL) * 100 : 0;
-                }
-            } else {
-                let table = SIMPLES_NACIONAL_TABLES[activityType];
-                if (!table) {
-                    console.warn(`Tabela de Simples Nacional não encontrada para a atividade: ${activityType}`);
-                    taxAmount = 0;
-                    effectivePercentage = 0;
-                } else {
-                    let foundRange = null;
-                    for (const range of table) {
-                        if (annualGrossBRL <= range.rbt12_max) {
-                            foundRange = range;
-                            break;
-                        }
-                    }
-
-                    if (foundRange) {
-                        if (annualGrossBRL > 0) {
-                            effectivePercentage = ((annualGrossBRL * foundRange.aliq - foundRange.pd) / annualGrossBRL) * 100;
-                            taxAmount = (annualGrossBRL * effectivePercentage) / 100;
-                        } else {
-                            effectivePercentage = 0;
-                            taxAmount = 0;
-                        }
-                    } else {
-                        const lastRange = table[table.length - 1];
-                        if (annualGrossBRL > 0) {
-                            effectivePercentage = ((annualGrossBRL * lastRange.aliq - lastRange.pd) / annualGrossBRL) * 100;
-                            taxAmount = (annualGrossBRL * effectivePercentage) / 100;
-                            taxCompanyType.textContent += " (Acima do Limite EPP - Simulação)";
-                        } else {
-                            effectivePercentage = 0;
-                            taxAmount = 0;
-                        }
-                    }
-                }
-            }
-
-            const netAnnualBRL = annualGrossBRL - taxAmount;
-            taxGrossAnnualBRL.textContent = formatCurrency(annualGrossBRL, 'R$');
-            taxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
-            taxPercentage.textContent = `${effectivePercentage.toFixed(2)}%`;
-
-            return { taxAmount };
-        };
-
-
-        // Main calculation function
-        const calculateEarnings = () => {
-            const isValidHoursPerDay = validateInput(hoursPerDayInput, errorHoursPerDay, 0, 24);
-            const isValidDaysPerWeek = validateInput(daysPerWeekInput, errorDaysPerWeek, 1, 7, true);
-            const isValidUsdToBrlRate = validateInput(usdToBrlRateInput, errorUsdToBrlRate);
-            const isValidEurToBrlRate = validateInput(eurToBrlRateInput, errorEurToBrlRate);
-            const isValidMonthlyGrossSalary = validateInput(monthlyGrossSalaryInput, errorMonthlyGrossSalary, 0);
-
-            const hoursPerDay = isValidHoursPerDay ? parseFloat(hoursPerDayInput.value) : 0;
-            const daysPerWeek = isValidDaysPerWeek ? parseInt(daysPerWeekInput.value) : 0;
-            const usdToBrlRate = isValidUsdToBrlRate ? parseFloat(usdToBrlRateInput.value) : 0;
-            const eurToBrlRate = isValidEurToBrlRate ? parseFloat(eurToBrlRateInput.value) : 0;
-            const companyType = companyTypeSelect.value;
-            const activityType = activityTypeSelect.value;
-
-            const ANNUAL_WORK_DAYS = daysPerWeek * WEEKS_PER_YEAR;
-
-            let baseHourlyRateUSD = null;
-            let baseAnnualUSD = null;
-
-            const isHourlyRateProvided = hourlyRateInput.value.trim() !== '' && validateInput(hourlyRateInput, errorHourlyRate);
-            const isAnnualEarningsUSDProvided = annualEarningsUSDInput.value.trim() !== '' && validateInput(annualEarningsUSDInput, errorAnnualEarningsUSD);
-
-            if (isHourlyRateProvided) {
-                baseHourlyRateUSD = parseFloat(hourlyRateInput.value);
-                if (hoursPerDay > 0 && daysPerWeek > 0) {
-                    baseAnnualUSD = baseHourlyRateUSD * hoursPerDay * daysPerWeek * WEEKS_PER_YEAR;
-                    annualEarningsUSDInput.value = baseAnnualUSD.toFixed(2);
-                } else {
-                    baseAnnualUSD = 0;
-                    annualEarningsUSDInput.value = '';
-                }
-            } else if (isAnnualEarningsUSDProvided) {
-                baseAnnualUSD = parseFloat(annualEarningsUSDInput.value);
-                if (hoursPerDay > 0 && daysPerWeek > 0 && ANNUAL_WORK_DAYS > 0) {
-                    baseHourlyRateUSD = baseAnnualUSD / (hoursPerDay * ANNUAL_WORK_DAYS);
-                    hourlyRateInput.value = baseHourlyRateUSD.toFixed(2);
-                } else {
-                    baseHourlyRateUSD = 0;
-                    hourlyRateInput.value = '';
-                }
-            } else {
-                hourlyRateInput.value = '';
-                annualEarningsUSDInput.value = '';
-            }
-
-            let finalDailyUSD = 0, finalWeeklyUSD = 0, finalMonthlyUSD = 0, finalAnnualUSD = 0;
-
-            if (baseHourlyRateUSD !== null && baseHourlyRateUSD > 0 && hoursPerDay > 0 && daysPerWeek > 0) {
-                finalDailyUSD = baseHourlyRateUSD * hoursPerDay;
-                finalWeeklyUSD = finalDailyUSD * daysPerWeek;
-                finalMonthlyUSD = finalDailyUSD * MONTHLY_WORK_DAYS;
-                finalAnnualUSD = finalWeeklyUSD * WEEKS_PER_YEAR;
-            } else if (baseAnnualUSD !== null && baseAnnualUSD > 0) {
-                finalAnnualUSD = baseAnnualUSD;
-                finalWeeklyUSD = finalAnnualUSD / WEEKS_PER_YEAR;
-                if (daysPerWeek > 0) {
-                    finalDailyUSD = finalWeeklyUSD / daysPerWeek;
-                }
-                finalMonthlyUSD = finalDailyUSD * MONTHLY_WORK_DAYS;
-            }
-
-            document.getElementById('dailyUSD').textContent = formatCurrency(finalDailyUSD, '$');
-            document.getElementById('weeklyUSD').textContent = formatCurrency(finalWeeklyUSD, '$');
-            document.getElementById('monthlyUSD').textContent = formatCurrency(finalMonthlyUSD, '$');
-            document.getElementById('annualUSD').textContent = formatCurrency(finalAnnualUSD, '$');
-
-            let baseAnnualEUR = null;
-
-            const isAnnualEarningsEURProvided = annualEarningsEURInput.value.trim() !== '' && validateInput(annualEarningsEURInput, errorAnnualEarningsEUR);
-
-            if (isAnnualEarningsEURProvided) {
-                baseAnnualEUR = parseFloat(annualEarningsEURInput.value);
-            } else {
-                annualEarningsEURInput.value = '';
-            }
-
-            let finalDailyEUR = 0, finalWeeklyEUR = 0, finalMonthlyEUR = 0, finalAnnualEUR = 0;
-
-            if (baseAnnualEUR !== null && baseAnnualEUR > 0 && hoursPerDay > 0 && daysPerWeek > 0) {
-                finalAnnualEUR = baseAnnualEUR;
-                finalMonthlyEUR = finalAnnualEUR / 12;
-                finalWeeklyEUR = finalAnnualEUR / WEEKS_PER_YEAR;
-                if (ANNUAL_WORK_DAYS > 0) {
-                    finalDailyEUR = finalAnnualEUR / ANNUAL_WORK_DAYS;
-                }
-            }
-
-            document.getElementById('dailyEUR').textContent = formatCurrency(finalDailyEUR, '€');
-            document.getElementById('weeklyEUR').textContent = formatCurrency(finalWeeklyEUR, '€');
-            document.getElementById('monthlyEUR').textContent = formatCurrency(finalMonthlyEUR, '€');
-            document.getElementById('annualEUR').textContent = formatCurrency(finalAnnualEUR, '€');
-
-            const annualBRL_USD = finalAnnualUSD * usdToBrlRate;
-            document.getElementById('dailyBRL_USD').textContent = formatCurrency(finalDailyUSD * usdToBrlRate, 'R$');
-            document.getElementById('weeklyBRL_USD').textContent = formatCurrency(finalWeeklyUSD * usdToBrlRate, 'R$');
-            document.getElementById('monthlyBRL_USD').textContent = formatCurrency(finalMonthlyUSD * usdToBrlRate, 'R$');
-            document.getElementById('annualBRL_USD').textContent = formatCurrency(annualBRL_USD, 'R$');
-
-            const annualBRL_EUR = finalAnnualEUR * eurToBrlRate;
-            document.getElementById('dailyBRL_EUR').textContent = formatCurrency(finalDailyEUR * eurToBrlRate, 'R$');
-            document.getElementById('weeklyBRL_EUR').textContent = formatCurrency(finalWeeklyEUR * eurToBrlRate, 'R$');
-            document.getElementById('monthlyBRL_EUR').textContent = formatCurrency(finalMonthlyEUR * eurToBrlRate, 'R$');
-            document.getElementById('annualBRL_EUR').textContent = formatCurrency(annualBRL_EUR, 'R$');
-
-            const grossAnnualBRL = Math.max(annualBRL_USD, annualBRL_EUR);
-            const { taxAmount } = calculateTaxes(grossAnnualBRL, companyType, activityType);
-
-            const healthPlanCost = calculateHealthPlanCost();
-            const inssCost = calculateINSSCost();
-
-            let additionalExpensesTotal = 0;
-            document.querySelectorAll('#additionalExpensesContainer input[type="number"]').forEach(input => {
-                if (!isNaN(parseFloat(input.value))) {
-                    additionalExpensesTotal += parseFloat(input.value);
-                }
-            });
-
-            const additionalExpensesTotalAnnual = additionalExpensesTotal * 12;
-
-            const totalDeductions = taxAmount + healthPlanCost + inssCost + additionalExpensesTotalAnnual;
-
-            const finalNetAnnual = grossAnnualBRL - totalDeductions;
-            const finalNetMonthly = finalNetAnnual / 12;
-            const finalNetWeekly = finalNetAnnual / WEEKS_PER_YEAR;
-            const finalNetDaily = finalNetAnnual / (ANNUAL_WORK_DAYS > 0 ? ANNUAL_WORK_DAYS : 1);
-
-            finalGrossAnnualBRL.textContent = formatCurrency(grossAnnualBRL, 'R$');
-            finalTaxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
-            finalHealthPlanCost.textContent = formatCurrency(healthPlanCost, 'R$');
-            finalINSSCost.textContent = formatCurrency(inssCost, 'R$');
-            finalAdditionalExpensesCost.textContent = formatCurrency(additionalExpensesTotalAnnual, 'R$');
-            finalTotalDeductions.textContent = formatCurrency(totalDeductions, 'R$');
-            finalNetAnnualBRL.textContent = formatCurrency(finalNetAnnual, 'R$');
-            finalNetMonthlyBRL.textContent = formatCurrency(finalNetMonthly, 'R$');
-            finalNetWeeklyBRL.textContent = formatCurrency(finalNetWeekly, 'R$');
-            finalNetDailyBRL.textContent = formatCurrency(finalNetDaily, 'R$');
-
-            // Calculate and display budget suggestions
-            const netMonthlyForBudget = finalNetMonthly;
-
-            const investmentAmount = netMonthlyForBudget * 0.7;
-            const fixedExpensesAmount = netMonthlyForBudget * 0.2;
-            const personalExpensesAmount = netMonthlyForBudget * 0.1;
-
-            budgetInvestment.textContent = formatCurrency(investmentAmount, 'R$');
-            budgetFixedExpenses.textContent = formatCurrency(fixedExpensesAmount, 'R$');
-            budgetPersonalExpenses.textContent = formatCurrency(personalExpensesAmount, 'R$');
-        };
-
-        // Event Listeners
-        hourlyRateInput.addEventListener('input', () => {
-            annualEarningsUSDInput.value = '';
-            calculateEarnings();
-        });
-        annualEarningsUSDInput.addEventListener('input', () => {
-            hourlyRateInput.value = '';
-            calculateEarnings();
-        });
-        annualEarningsEURInput.addEventListener('input', calculateEarnings);
-        hoursPerDayInput.addEventListener('input', calculateEarnings);
-        daysPerWeekInput.addEventListener('input', calculateEarnings);
-        usdToBrlRateInput.addEventListener('input', calculateEarnings);
-        eurToBrlRateInput.addEventListener('input', calculateEarnings);
-
-        monthlyGrossSalaryInput.addEventListener('input', calculateEarnings);
-        additionalExpensesContainer.addEventListener('input', calculateEarnings);
-        addExpenseButton.addEventListener('click', addExpenseField);
-
-        companyTypeSelect.addEventListener('change', () => {
-            if (companyTypeSelect.value === 'MEI') {
-                activityTypeGroup.classList.add('hidden');
-            } else {
-                activityTypeGroup.classList.remove('hidden');
-            }
-            calculateEarnings();
-        });
-        activityTypeSelect.addEventListener('change', calculateEarnings);
-
-        fetchRatesButton.addEventListener('click', fetchCurrencyRates);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (companyTypeSelect.value === 'MEI') {
-                activityTypeGroup.classList.add('hidden');
-            } else {
-                activityTypeGroup.classList.remove('hidden');
-            }
-            addExpenseField(); // Add one initial expense field
-            calculateEarnings();
-            fetchCurrencyRates();
-            setInterval(fetchCurrencyRates, 300000);
-        });
-    </script>
 </body>
 
 </html>
