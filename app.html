@@ -668,31 +668,51 @@
     </div>
 
     <script>
-        // Use a function to safely load Firebase configuration from environment variables
-        const getFirebaseConfig = () => {
-            // This object will be populated by Vercel environment variables
-            const firebaseConfig = {
-                apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-                authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-                projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-                storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-                messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-                appId: import.meta.env.VITE_FIREBASE_APP_ID
-            };
+        // CONFIGURAÇÃO DO FIREBASE:
+        // A Vercel não expõe variáveis de ambiente diretamente ao navegador.
+        // Para que esta aplicação funcione, você precisará configurar as variáveis de ambiente
+        // do seu projeto Firebase na Vercel e criar um arquivo de rota na pasta 'api'
+        // para que as credenciais sejam retornadas com segurança.
 
-            // Check if Vercel environment variables are available
-            if (!firebaseConfig.apiKey) {
-                console.error("Firebase environment variables not found. Please configure them on Vercel.");
-                // Return a dummy config or throw an error to prevent the app from crashing
-                return { apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: "" };
-            }
-            return firebaseConfig;
-        };
+        // Exemplo de como a sua Vercel Function (em api/firebase-config.js) deve se parecer:
+        //
+        // export default (req, res) => {
+        //   res.status(200).json({
+        //     apiKey: process.env.VITE_FIREBASE_API_KEY,
+        //     authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+        //     projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+        //     storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+        //     messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        //     appId: process.env.VITE_FIREBASE_APP_ID
+        //   });
+        // };
 
         // Firebase SDKs - Firebase App, Auth e Firestore
-        const app = firebase.initializeApp(getFirebaseConfig());
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        let app;
+        let auth;
+        let db;
+
+        // Função assíncrona para buscar a configuração do Firebase
+        const initializeFirebase = async () => {
+            try {
+                const response = await fetch('/api/firebase-config');
+                const firebaseConfig = await response.json();
+
+                if (firebaseConfig.apiKey) {
+                    app = firebase.initializeApp(firebaseConfig);
+                    auth = firebase.auth();
+                    db = firebase.firestore();
+                    console.log("Firebase inicializado com sucesso!");
+                    setupAuthListener();
+                } else {
+                    console.error("Configuração do Firebase não encontrada. Verifique suas variáveis de ambiente na Vercel.");
+                    authStatusDiv.innerHTML = `<p class="text-red-500">Erro: Credenciais do Firebase não configuradas.</p>`;
+                }
+            } catch (error) {
+                console.error("Erro ao buscar a configuração do Firebase:", error);
+                authStatusDiv.innerHTML = `<p class="text-red-500">Erro: Não foi possível conectar ao Firebase.</p>`;
+            }
+        };
 
         // Get references to input elements
         const hourlyRateInput = document.getElementById('hourlyRate');
@@ -1194,10 +1214,12 @@
                         <i class="fab fa-google mr-2"></i> Entrar com o Google
                     </button>
                 `;
-                document.getElementById('googleSignInBtn').addEventListener('click', () => {
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    auth.signInWithPopup(provider);
-                });
+                if (document.getElementById('googleSignInBtn')) {
+                    document.getElementById('googleSignInBtn').addEventListener('click', () => {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        auth.signInWithPopup(provider);
+                    });
+                }
                 additionalExpensesContainer.innerHTML = '';
                 addExpenseField();
                 calculateAndSave();
@@ -1205,21 +1227,23 @@
         });
 
         const loadUserExpenses = async (uid) => {
-            const userDoc = await db.collection('users').doc(uid).get();
-            if (userDoc.exists) {
-                const userData = userDoc.data();
-                if (userData.expenses) {
-                    additionalExpensesContainer.innerHTML = '';
-                    userData.expenses.forEach(expense => {
-                        addExpenseField(expense.description, expense.value);
-                    });
+            if (db) {
+                const userDoc = await db.collection('users').doc(uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    if (userData.expenses) {
+                        additionalExpensesContainer.innerHTML = ''; // Clear existing default expense
+                        userData.expenses.forEach(expense => {
+                            addExpenseField(expense.description, expense.value);
+                        });
+                    }
                 }
             }
             calculateAndSave();
         };
 
         const saveUserExpenses = async () => {
-            if (user) {
+            if (user && db) {
                 const expenses = [];
                 document.querySelectorAll('.additional-expense-item').forEach(item => {
                     const description = item.querySelector('input[type="text"]').value;
@@ -1230,6 +1254,7 @@
             }
         };
 
+        // Modify event listeners to call saveUserExpenses as well
         const calculateAndSave = async () => {
             calculateEarnings();
             await saveUserExpenses();
@@ -1254,8 +1279,7 @@
                 activityTypeGroup.classList.remove('hidden');
             }
 
-            addExpenseField();
-            calculateAndSave();
+            initializeFirebase(); // Initialize Firebase
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
         });
