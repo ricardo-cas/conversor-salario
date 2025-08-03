@@ -1197,34 +1197,36 @@
         // --- Firebase Auth and Firestore Logic ---
         let user;
 
-        auth.onAuthStateChanged((loggedInUser) => {
-            if (loggedInUser) {
-                user = loggedInUser;
-                const userDisplayName = user.displayName || 'Usuário';
-                authStatusDiv.innerHTML = `
-                    <p class="mb-2">Olá, <strong>${userDisplayName}</strong>! Suas despesas estão salvas.</p>
-                    <button id="googleSignOutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
-                `;
-                document.getElementById('googleSignOutBtn').addEventListener('click', () => auth.signOut());
-                loadUserExpenses(user.uid);
-            } else {
-                user = null;
-                authStatusDiv.innerHTML = `
-                    <button id="googleSignInBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center mx-auto">
-                        <i class="fab fa-google mr-2"></i> Entrar com o Google
-                    </button>
-                `;
-                if (document.getElementById('googleSignInBtn')) {
-                    document.getElementById('googleSignInBtn').addEventListener('click', () => {
-                        const provider = new firebase.auth.GoogleAuthProvider();
-                        auth.signInWithPopup(provider);
-                    });
+        const setupAuthListener = () => {
+            auth.onAuthStateChanged((loggedInUser) => {
+                if (loggedInUser) {
+                    user = loggedInUser;
+                    const userDisplayName = user.displayName || 'Usuário';
+                    authStatusDiv.innerHTML = `
+                        <p class="mb-2">Olá, <strong>${userDisplayName}</strong>! Suas despesas estão salvas.</p>
+                        <button id="googleSignOutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
+                    `;
+                    document.getElementById('googleSignOutBtn').addEventListener('click', () => auth.signOut());
+                    loadUserExpenses(user.uid);
+                } else {
+                    user = null;
+                    authStatusDiv.innerHTML = `
+                        <button id="googleSignInBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center mx-auto">
+                            <i class="fab fa-google mr-2"></i> Entrar com o Google
+                        </button>
+                    `;
+                    if (document.getElementById('googleSignInBtn')) {
+                        document.getElementById('googleSignInBtn').addEventListener('click', () => {
+                            const provider = new firebase.auth.GoogleAuthProvider();
+                            auth.signInWithPopup(provider);
+                        });
+                    }
+                    additionalExpensesContainer.innerHTML = '';
+                    addExpenseField();
+                    calculateAndSave();
                 }
-                additionalExpensesContainer.innerHTML = '';
-                addExpenseField();
-                calculateAndSave();
-            }
-        });
+            });
+        }
 
         const loadUserExpenses = async (uid) => {
             if (db) {
@@ -1254,10 +1256,11 @@
             }
         };
 
-        // Modify event listeners to call saveUserExpenses as well
         const calculateAndSave = async () => {
             calculateEarnings();
-            await saveUserExpenses();
+            if (user && db) { // Only save if user is logged in
+                await saveUserExpenses();
+            }
         };
 
         document.querySelectorAll('input:not([id^="expense-"]), select').forEach(input => {
@@ -1267,7 +1270,11 @@
 
         addExpenseButton.addEventListener('click', () => {
             addExpenseField();
-            calculateAndSave();
+            if (user) { // Only save if user is logged in
+                calculateAndSave();
+            } else {
+                calculateEarnings();
+            }
         });
 
         fetchRatesButton.addEventListener('click', fetchCurrencyRates);
@@ -1279,11 +1286,10 @@
                 activityTypeGroup.classList.remove('hidden');
             }
 
-            initializeFirebase(); // Initialize Firebase
+            initializeFirebase();
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
         });
-
     </script>
 </body>
 
