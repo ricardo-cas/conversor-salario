@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,37 +7,27 @@
 
     <!-- Metadados para SEO e Compartilhamento em Redes Sociais -->
     <meta name="author" content="Ricardo Costa Alves dos Santos">
-    <meta name="description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta name="keywords"
-        content="calculadora de ganhos, salário, dólar, euro, real, cotação de moeda, finanças pessoais, jornada de trabalho, conversor de moeda, ganhos por hora, ganhos anuais">
+    <meta name="description" content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
+    <meta name="keywords" content="calculadora de ganhos, salário, dólar, euro, real, cotação de moeda, finanças pessoais, jornada de trabalho, conversor de moeda, ganhos por hora, ganhos anuais">
 
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://conversor-salario.vercel.app/">
-    <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
+    <meta property="og:url" content="https://conversor-salario.vercel.app/"> <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
     <meta property="og:title" content="Calculadora de Ganhos - Dólar, Euro e Real">
-    <meta property="og:description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta property="og:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos">
-    <!-- Imagem de prévia para compartilhamento -->
+    <meta property="og:description" content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
+    <meta property="og:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos"> <!-- Imagem de prévia para compartilhamento -->
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://conversor-salario.vercel.app/">
-    <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
+    <meta name="twitter:url" content="https://conversor-salario.vercel.app/"> <!-- ATUALIZE COM A URL REAL DA SUA PÁGINA -->
     <meta name="twitter:title" content="Calculadora de Ganhos - Dólar, Euro e Real">
-    <meta name="twitter:description"
-        content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
-    <meta name="twitter:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos">
-    <!-- Imagem de prévia para compartilhamento -->
+    <meta name="twitter:description" content="Calcule seus ganhos diários, semanais, mensais e anuais em Dólar, Euro e Real Brasileiro com cotações atualizadas automaticamente. Ferramenta flexível para profissionais.">
+    <meta name="twitter:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Calculadora+de+Ganhos"> <!-- Imagem de prévia para compartilhamento -->
     <!-- <meta name="twitter:creator" content="@seu_twitter_aqui"> OPCIONAL: Adicione seu @ do Twitter, se tiver. -->
 
     <!-- Favicon (Ícone da aba do navegador) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#xf1ec;</text></svg>">
-    <!-- Ícone de calculadora Font Awesome -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#xf1ec;</text></svg>"> <!-- Ícone de calculadora Font Awesome -->
 
     <!-- Vercel Analytics -->
     <script>
@@ -51,75 +40,54 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            /* Light blue-gray background */
+            background-color: #f0f4f8; /* Light blue-gray background */
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            /* Align to top for better scrollability */
+            align-items: flex-start; /* Align to top for better scrollability */
             min-height: 100vh;
             padding: 2rem;
         }
-
         .container {
             background-color: #ffffff;
             padding: 2.5rem;
-            border-radius: 1.5rem;
-            /* More rounded corners */
+            border-radius: 1.5rem; /* More rounded corners */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            max-width: 900px;
-            /* Increased max-width */
+            max-width: 900px; /* Increased max-width */
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
-
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
-
         .input-group label {
             font-weight: 600;
-            color: #334155;
-            /* Darker text for labels */
+            color: #334155; /* Darker text for labels */
         }
-
-        .input-group input,
-        .input-group select {
+        .input-group input, .input-group select {
             padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            /* Light gray border */
-            border-radius: 0.75rem;
-            /* Rounded input fields */
+            border: 1px solid #cbd5e1; /* Light gray border */
+            border-radius: 0.75rem; /* Rounded input fields */
             font-size: 1rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
-            border-color: #3b82f6;
-            /* Blue focus border */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-            /* Light blue shadow on focus */
+            border-color: #3b82f6; /* Blue focus border */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Light blue shadow on focus */
         }
-
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            /* Responsive grid */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
             gap: 1.5rem;
         }
-
         .result-card {
-            background-color: #eff6ff;
-            /* Very light blue background */
+            background-color: #eff6ff; /* Very light blue background */
             padding: 1.25rem;
-            border-radius: 1rem;
-            /* Rounded cards */
+            border-radius: 1rem; /* Rounded cards */
             text-align: center;
             box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             display: flex;
@@ -127,53 +95,39 @@
             justify-content: center;
             align-items: center;
         }
-
         .result-card h3 {
             font-size: 1.125rem;
             font-weight: 700;
-            color: #1e40af;
-            /* Darker blue for titles */
+            color: #1e40af; /* Darker blue for titles */
             margin-bottom: 0.5rem;
         }
-
         .result-card p {
             font-size: 1.5rem;
             font-weight: 800;
-            color: #1d4ed8;
-            /* Stronger blue for values */
+            color: #1d4ed8; /* Stronger blue for values */
         }
-
         .section-title {
-            font-size: 1.75rem;
-            /* Larger title */
+            font-size: 1.75rem; /* Larger title */
             font-weight: 700;
-            color: #1e293b;
-            /* Dark title color */
+            color: #1e293b; /* Dark title color */
             margin-bottom: 1.5rem;
             text-align: center;
         }
-
         .subsection-title {
-            font-size: 1.25rem;
-            /* Sub-section title */
+            font-size: 1.25rem; /* Sub-section title */
             font-weight: 600;
             color: #334155;
             margin-top: 1rem;
             margin-bottom: 1rem;
             text-align: center;
-            width: 100%;
-            /* Ensure it spans full width in its grid */
-            grid-column: 1 / -1;
-            /* Make it span all columns in a grid */
+            width: 100%; /* Ensure it spans full width in its grid */
+            grid-column: 1 / -1; /* Make it span all columns in a grid */
         }
-
         .error-message {
-            color: #ef4444;
-            /* Red error message */
+            color: #ef4444; /* Red error message */
             font-size: 0.875rem;
             margin-top: 0.25rem;
         }
-
         .currency-status {
             display: flex;
             justify-content: center;
@@ -183,7 +137,6 @@
             font-size: 0.9rem;
             color: #475569;
         }
-
         .currency-status button {
             background-color: #3b82f6;
             color: white;
@@ -192,16 +145,13 @@
             font-weight: 600;
             transition: background-color 0.2s;
         }
-
         .currency-status button:hover {
             background-color: #2563eb;
         }
-
         .currency-status .loading-indicator {
             color: #1d4ed8;
             font-weight: 600;
         }
-
         .disclaimer {
             font-size: 0.85rem;
             color: #64748b;
@@ -211,28 +161,23 @@
             border-radius: 0.75rem;
             background-color: #f8fafc;
         }
-
         .additional-expenses-list {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-
         .additional-expense-item {
             display: grid;
             grid-template-columns: 2fr 1fr 40px;
             gap: 1rem;
             align-items: center;
         }
-
         .additional-expense-item input[type="text"] {
             width: 100%;
         }
-
         .additional-expense-item input[type="number"] {
             width: 100%;
         }
-
         .additional-expense-item button {
             background-color: #ef4444;
             color: white;
@@ -246,11 +191,9 @@
             justify-content: center;
             transition: background-color 0.2s;
         }
-
         .additional-expense-item button:hover {
-            background-color: #dc2626;
+             background-color: #dc2626;
         }
-
         .add-expense-button {
             background-color: #10b981;
             color: white;
@@ -262,11 +205,9 @@
             transition: background-color 0.2s;
             margin-top: 1rem;
         }
-
         .add-expense-button:hover {
             background-color: #059669;
         }
-
         .budget-card {
             padding: 1.25rem;
             border-radius: 1rem;
@@ -277,52 +218,39 @@
             justify-content: center;
             align-items: center;
         }
-
         .budget-card h3 {
             font-size: 1.125rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-
         .budget-card p {
             font-size: 1.5rem;
             font-weight: 800;
         }
-
         .budget-card.invest-card {
             background-color: #e0f2fe;
         }
-
-        .budget-card.invest-card h3,
-        .budget-card.invest-card p {
+        .budget-card.invest-card h3, .budget-card.invest-card p {
             color: #0c4a6e;
         }
-
         .budget-card.fixed-expenses-card {
             background-color: #fef9e7;
         }
-
-        .budget-card.fixed-expenses-card h3,
-        .budget-card.fixed-expenses-card p {
+        .budget-card.fixed-expenses-card h3, .budget-card.fixed-expenses-card p {
             color: #78350f;
         }
-
         .budget-card.personal-expenses-card {
             background-color: #f3e8ff;
         }
-
-        .budget-card.personal-expenses-card h3,
-        .budget-card.personal-expenses-card p {
+        .budget-card.personal-expenses-card h3, .budget-card.personal-expenses-card p {
             color: #581c87;
         }
-
         .budget-buttons {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-
         .budget-buttons button {
             background-color: #cbd5e1;
             color: #334155;
@@ -331,13 +259,10 @@
             font-weight: 600;
             transition: background-color 0.2s;
         }
-
-        .budget-buttons button.active,
-        .budget-buttons button:hover {
+        .budget-buttons button.active, .budget-buttons button:hover {
             background-color: #94a3b8;
             color: white;
         }
-
         /* Estilo para a base de divisão */
         #budgetTotalInfo {
             display: flex;
@@ -350,24 +275,27 @@
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-
         #budgetTotalInfo p {
             font-size: 1.125rem;
             font-weight: 600;
             color: #334155;
             margin-bottom: 0.25rem;
         }
-
         #budgetTotalInfo .value {
-            font-size: 2rem;
-            /* Aumentado para destacar mais */
+            font-size: 2rem; /* Aumentado para destacar mais */
             font-weight: 800;
             color: #1d4ed8;
             margin-top: 0;
         }
+        #retirementChartContainer {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
-
 <body class="bg-gray-100">
     <div class="container mx-auto p-6 flex flex-col">
         <h1 class="section-title">Converta e Planeje</h1>
@@ -381,27 +309,23 @@
             </div>
             <div class="input-group">
                 <label for="annualEarningsUSD">Ganhos Anuais (USD):</label>
-                <input type="number" id="annualEarningsUSD" value="" step="0.01" min="0" class="w-full"
-                    placeholder="Opcional">
+                <input type="number" id="annualEarningsUSD" value="" step="0.01" min="0" class="w-full" placeholder="Opcional">
                 <p id="errorAnnualEarningsUSD" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
                 <label for="annualEarningsEUR">Ganhos Anuais (EUR):</label>
-                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full"
-                    placeholder="Opcional">
+                <input type="number" id="annualEarningsEUR" value="70000" step="0.01" min="0" class="w-full" placeholder="Opcional">
                 <p id="errorAnnualEarningsEUR" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
                 <label for="hoursPerDay">Horas por Dia:</label>
                 <input type="number" id="hoursPerDay" value="8" step="0.5" min="0" max="24" class="w-full">
-                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido entre 0 e 24.
-                </p>
+                <p id="errorHoursPerDay" class="error-message hidden">Por favor, insira um número válido entre 0 e 24.</p>
             </div>
             <div class="input-group">
                 <label for="daysPerWeek">Dias por Semana (1-7):</label>
                 <input type="number" id="daysPerWeek" value="5" step="1" min="1" max="7" class="w-full">
-                <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número inteiro entre 1 e 7.
-                </p>
+                <p id="errorDaysPerWeek" class="error-message hidden">Por favor, insira um número inteiro entre 1 e 7.</p>
             </div>
             <div class="input-group">
                 <label for="companyType">Tipo de Empresa:</label>
@@ -432,8 +356,7 @@
         </div>
 
         <div class="currency-status">
-            <button id="fetchRatesButton"
-                class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">
+            <button id="fetchRatesButton" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">
                 Atualizar Cotações
             </button>
             <span id="loadingIndicator" class="loading-indicator hidden">Atualizando cotações...</span>
@@ -539,7 +462,7 @@
                 <h3>Tipo de Empresa</h3>
                 <p id="taxCompanyType">N/A</p>
             </div>
-            <div class="result-card">
+             <div class="result-card">
                 <h3>Faturamento Anual Bruto (BRL)</h3>
                 <p id="taxGrossAnnualBRL">R$0.00</p>
             </div>
@@ -553,20 +476,14 @@
             </div>
         </div>
         <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma <strong>simulação
-                    simplificada</strong> e não substitui a consulta a um profissional de contabilidade. As alíquotas e
-                regras tributárias no Brasil são complexas e dependem de diversos fatores (CNAE específico, faturamento
-                acumulado real, despesas, etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para
-                garantir a conformidade fiscal da sua empresa, <strong>sempre consulte um contador.</strong></p>
-            <p>Os valores do DAS-MEI são fixos para 2025 (R$ 76,90 para Comércio/Indústria, R$ 80,90 para Serviços, R$
-                81,90 para Comércio e Serviços). Para ME/EPP, o faturamento anual projetado é usado como base para a
-                alíquota efetiva.</p>
+            <p><strong>Aviso Importante:</strong> Esta seção de cálculo de impostos é uma <strong>simulação simplificada</strong> e não substitui a consulta a um profissional de contabilidade. As alíquotas e regras tributárias no Brasil são complexas e dependem de diversos fatores (CNAE específico, faturamento acumulado real, despesas, etc.) que não são totalmente considerados aqui. Para um cálculo preciso e para garantir a conformidade fiscal da sua empresa, <strong>sempre consulte um contador.</strong></p>
+            <p>Os valores do DAS-MEI são fixos para 2025 (R$ 76,90 para Comércio/Indústria, R$ 80,90 para Serviços, R$ 81,90 para Comércio e Serviços). Para ME/EPP, o faturamento anual projetado é usado como base para a alíquota efetiva.</p>
         </div>
 
         <!-- Nova Seção de Plano de Saúde e Líquido Final -->
         <h2 class="section-title mt-8">Simulação de Despesas Mensais (BRL)</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="input-group">
+             <div class="input-group">
                 <label for="monthlyGrossSalary">Salário Bruto Mensal (para INSS):</label>
                 <!-- Salário Mínimo 2025: R$ 1.518,00 -->
                 <input type="number" id="monthlyGrossSalary" value="1518.00" step="0.01" min="0" class="w-full">
@@ -586,11 +503,11 @@
                 <h3>Plano de Saúde Filho</h3>
                 <p id="healthPlanChildCost">R$0.00/mês</p>
             </div>
-            <div class="result-card">
+             <div class="result-card">
                 <h3>Contribuição Mensal INSS</h3>
                 <p id="inssMonthlyCost">R$0.00/mês</p>
             </div>
-            <div class="result-card">
+             <div class="result-card">
                 <h3>% Efetiva INSS</h3>
                 <p id="inssPercentage">0.00%</p>
             </div>
@@ -611,7 +528,7 @@
         <button id="addExpenseButton" class="add-expense-button">
             <i class="fas fa-plus"></i> Adicionar Despesa
         </button>
-
+        
         <h2 class="section-title mt-8">Resumo de Ganhos Líquidos (BRL)</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Coluna de Custos -->
@@ -645,7 +562,7 @@
             <div>
                 <h3 class="subsection-title">Ganhos Líquidos Finais</h3>
                 <div class="results-grid">
-                    <div class="result-card">
+                     <div class="result-card">
                         <h3>Ganhos Brutos Anuais</h3>
                         <p id="finalGrossAnnualBRL">R$0.00</p>
                     </div>
@@ -670,7 +587,7 @@
         </div>
 
         <h2 class="section-title mt-8">Sugestão de Divisão de Orçamento</h2>
-
+        
         <div class="budget-buttons">
             <button id="rule702010Btn" class="active">70/20/10</button>
             <button id="rule503020Btn">50/30/20</button>
@@ -716,17 +633,8 @@
             </div>
         </div>
         <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta é uma sugestão de concentração de ganhos, com base na regra
-                70/20/10, para facilitar o seu planejamento financeiro. Antes de investir, é crucial construir uma
-                <strong>reserva de emergência</strong>, que pode cobrir de 6 a 12 meses das suas despesas mensais. O
-                valor para despesas fixas (20%) e gastos pessoais (10%) pode ser ajustado de acordo com a sua realidade.
-            </p>
-            <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são
-                <strong>estimativas médias</strong> e os cálculos de impostos e INSS são <strong>simulações</strong>. As
-                regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos,
-                são complexas e exigem a orientação de um contador para um planejamento adequado. Para um cálculo
-                preciso e para garantir seus direitos previdenciários e fiscais, <strong>sempre consulte um
-                    profissional.</strong></p>
+            <p><strong>Aviso Importante:</strong> Esta é uma sugestão de concentração de ganhos, com base na regra 70/20/10, para facilitar o seu planejamento financeiro. Antes de investir, é crucial construir uma <strong>reserva de emergência</strong>, que pode cobrir de 6 a 12 meses das suas despesas mensais. O valor para despesas fixas (20%) e gastos pessoais (10%) pode ser ajustado de acordo com a sua realidade.</p>
+            <p><strong>Aviso sobre Simulações:</strong> Os valores apresentados para plano de saúde são <strong>estimativas médias</strong> e os cálculos de impostos e INSS são <strong>simulações</strong>. As regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos, são complexas e exigem a orientação de um contador para um planejamento adequado. Para um cálculo preciso e para garantir seus direitos previdenciários e fiscais, <strong>sempre consulte um profissional.</strong></p>
         </div>
     </div>
 
@@ -919,7 +827,7 @@
         const addExpenseField = (description = '', value = 0) => {
             const expenseItem = document.createElement('div');
             expenseItem.classList.add('additional-expense-item');
-
+            
             const expenseId = `expense-${Date.now()}`;
             expenseItem.id = expenseId;
             expenseItem.innerHTML = `
@@ -934,11 +842,11 @@
                 <button type="button" onclick="removeExpenseField('${expenseId}')"><i class="fas fa-times"></i></button>
             `;
             additionalExpensesContainer.appendChild(expenseItem);
-
+            
             const newExpenseInput = document.getElementById(`${expenseId}-value`);
             newExpenseInput.addEventListener('input', calculateEarnings);
         };
-
+        
         // Function to remove an expense field
         window.removeExpenseField = (id) => {
             const expenseElement = document.getElementById(id);
@@ -961,7 +869,7 @@
             healthPlanAdult2Cost.textContent = formatCurrency(adult2Cost, 'R$') + '/mês';
             healthPlanChildCost.textContent = formatCurrency(childCost, 'R$') + '/mês';
             healthPlanTotalAnnual.textContent = formatCurrency(totalAnnual, 'R$');
-
+            
             return totalAnnual;
         };
 
@@ -969,24 +877,24 @@
         const calculateINSSCost = () => {
             const isValidMonthlyGrossSalary = validateInput(monthlyGrossSalaryInput, errorMonthlyGrossSalary, 0);
             const monthlyGrossSalary = isValidMonthlyGrossSalary ? parseFloat(monthlyGrossSalaryInput.value) : 0;
-
+            
             let monthlyINSS = 0;
             let effectivePercentage = 0;
-
+            
             const maxSalary = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].max;
             const salaryToCalculate = Math.min(monthlyGrossSalary, maxSalary);
 
             if (salaryToCalculate > 0) {
-                const lastRange = INSS_TABLE_2025.find(range => salaryToCalculate <= range.max);
-                if (lastRange) {
+                 const lastRange = INSS_TABLE_2025.find(range => salaryToCalculate <= range.max);
+                 if (lastRange) {
                     monthlyINSS = (salaryToCalculate * lastRange.aliq) - lastRange.pd;
                     effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
-                } else {
+                 } else {
                     const lastAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
                     const lastPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
                     monthlyINSS = (maxSalary * lastAliq) - lastPd;
-                    effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
-                }
+                    effectivePercentage = (monthlyGrossSalary > 0) ? (monthlyINSS / monthlyGrossSalary) * 100 : 0;
+                 }
             }
 
             const totalAnnual = monthlyINSS * 12;
@@ -1061,7 +969,7 @@
             taxGrossAnnualBRL.textContent = formatCurrency(annualGrossBRL, 'R$');
             taxAmountBRL.textContent = formatCurrency(taxAmount, 'R$');
             taxPercentage.textContent = `${effectivePercentage.toFixed(2)}%`;
-
+            
             return { taxAmount };
         };
 
@@ -1071,13 +979,14 @@
             const customRuleActive = customRuleBtn.classList.contains('active');
 
             let investPercentage, fixedPercentage, personalPercentage;
+            let totalPercentage = 0;
 
             if (customRuleActive) {
                 const customInvestValue = parseFloat(customInvest.value) || 0;
                 const customFixedValue = parseFloat(customFixed.value) || 0;
                 const customPersonalValue = parseFloat(customPersonal.value) || 0;
-                const totalPercentage = customInvestValue + customFixedValue + customPersonalValue;
-
+                totalPercentage = customInvestValue + customFixedValue + customPersonalValue;
+                
                 if (totalPercentage > 100) {
                     budgetError.classList.remove('hidden');
                     return; // Stop calculation if sum exceeds 100%
@@ -1098,11 +1007,11 @@
             }
 
             budgetTotalValue.textContent = formatCurrency(netMonthly, 'R$');
-
+            
             budgetInvestment.textContent = formatCurrency(netMonthly * (investPercentage / 100), 'R$');
             budgetFixedExpenses.textContent = formatCurrency(netMonthly * (fixedPercentage / 100), 'R$');
             budgetPersonalExpenses.textContent = formatCurrency(netMonthly * (personalPercentage / 100), 'R$');
-
+            
             // Update card titles
             document.querySelector('.invest-card h3').textContent = `${investPercentage}% para Poupar / Investir`;
             document.querySelector('.fixed-expenses-card h3').textContent = `${fixedPercentage}% para Despesas Fixas`;
@@ -1252,20 +1161,38 @@
             finalNetMonthlyBRL.textContent = formatCurrency(finalNetMonthly, 'R$');
             finalNetWeeklyBRL.textContent = formatCurrency(finalNetWeekly, 'R$');
             finalNetDailyBRL.textContent = formatCurrency(finalNetDaily, 'R$');
-
+            
             calculateBudget(finalNetMonthly);
         };
 
         // Event Listeners
-        const allInputs = document.querySelectorAll('input, select');
-        allInputs.forEach(input => {
-            input.addEventListener('input', calculateEarnings);
-            input.addEventListener('change', calculateEarnings);
+        hourlyRateInput.addEventListener('input', () => {
+            annualEarningsUSDInput.value = '';
+            calculateEarnings();
         });
+        annualEarningsUSDInput.addEventListener('input', () => {
+            hourlyRateInput.value = '';
+            calculateEarnings();
+        });
+        annualEarningsEURInput.addEventListener('input', calculateEarnings);
+        hoursPerDayInput.addEventListener('input', calculateEarnings);
+        daysPerWeekInput.addEventListener('input', calculateEarnings);
+        usdToBrlRateInput.addEventListener('input', calculateEarnings);
+        eurToBrlRateInput.addEventListener('input', calculateEarnings);
+        
+        monthlyGrossSalaryInput.addEventListener('input', calculateEarnings);
+        additionalExpensesContainer.addEventListener('input', calculateEarnings);
+        addExpenseButton.addEventListener('click', addExpenseField);
 
-        addExpenseButton.addEventListener('click', () => {
-            addExpenseField();
+        companyTypeSelect.addEventListener('change', () => {
+            if (companyTypeSelect.value === 'MEI') {
+                activityTypeGroup.classList.add('hidden');
+            } else {
+                activityTypeGroup.classList.remove('hidden');
+            }
+            calculateEarnings();
         });
+        activityTypeSelect.addEventListener('change', calculateEarnings);
 
         // Event listeners for budget buttons
         rule702010Btn.addEventListener('click', () => {
@@ -1306,5 +1233,4 @@
         });
     </script>
 </body>
-
 </html>
