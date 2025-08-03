@@ -66,7 +66,7 @@
             padding: 2.5rem;
             border-radius: 1.5rem;
             /* More rounded corners */
-            box-shadow: 0 20px 25px -5-px rgba(0, 0, 0, 0.1), 0 10px 10px -5-px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             max-width: 900px;
             /* Increased max-width */
             width: 100%;
@@ -121,7 +121,7 @@
             border-radius: 1rem;
             /* Rounded cards */
             text-align: center;
-            box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -271,7 +271,7 @@
             padding: 1.25rem;
             border-radius: 1rem;
             text-align: center;
-            box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -316,40 +316,14 @@
             color: #581c87;
         }
     </style>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
 </head>
 
-<body class="bg-gray-100">
-    <script type="module" src="./api/firebase-config.js">
-        const firebaseConfig = {
-            apiKey: process.env.VITE_FIREBASE_API_KEY,
-            authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-            projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-            storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-            appId: process.env.VITE_FIREBASE_APP_ID,
-            measurementId: process.env.G_ANALYTICS_ID
-        };
-    </script>
-    <div class="container mx-auto p-6 flex flex-col">
-        <h1 class="section-title">Converta e Planeje</h1>
-
-        <!-- Seção de Autenticação -->
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center mb-8">
-            <h2 class="text-xl font-bold mb-4">Acesse para salvar suas despesas</h2>
-            <div id="authStatus">
-                <button id="googleSignInBtn"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center mx-auto">
-                    <i class="fab fa-google mr-2"></i> Entrar com o Google
-                </button>
-            </div>
-        </div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+    <div class="container">
+        <h1 class="section-title">Calculadora de Ganhos</h1>
 
         <!-- Seção de Entradas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="input-group">
                 <label for="hourlyRate">Valor Hora (USD):</label>
                 <input type="number" id="hourlyRate" value="44" step="0.01" min="0" class="w-full">
@@ -398,20 +372,19 @@
             <div class="input-group">
                 <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
                 <input type="number" id="usdToBrlRate" value="5.58" step="0.001" min="0" class="w-full" disabled>
+                <!-- Disabled for API control -->
                 <p id="errorUsdToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
                 <label for="eurToBrlRate">Taxa de Câmbio (EUR para BRL):</label>
                 <input type="number" id="eurToBrlRate" value="6.00" step="0.001" min="0" class="w-full" disabled>
+                <!-- Disabled for API control -->
                 <p id="errorEurToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
         </div>
 
         <div class="currency-status">
-            <button id="fetchRatesButton"
-                class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">
-                Atualizar Cotações
-            </button>
+            <button id="fetchRatesButton">Atualizar Cotações</button>
             <span id="loadingIndicator" class="loading-indicator hidden">Atualizando cotações...</span>
             <span>Última atualização: <span id="lastUpdated">--:--</span></span>
         </div>
@@ -680,52 +653,6 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO FIREBASE:
-        // A Vercel não expõe variáveis de ambiente diretamente ao navegador.
-        // Para que esta aplicação funcione, você precisará configurar as variáveis de ambiente
-        // do seu projeto Firebase na Vercel e criar um arquivo de rota na pasta 'api'
-        // para que as credenciais sejam retornadas com segurança.
-
-        // Exemplo de como a sua Vercel Function (em api/firebase-config.js) deve se parecer:
-        //
-        // export default (req, res) => {
-        //   res.status(200).json({
-        //     apiKey: process.env.VITE_FIREBASE_API_KEY,
-        //     authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-        //     projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-        //     storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-        //     messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        //     appId: process.env.VITE_FIREBASE_APP_ID
-        //   });
-        // };
-
-        // Firebase SDKs - Firebase App, Auth e Firestore
-        let app;
-        let auth;
-        let db;
-
-        // Função assíncrona para buscar a configuração do Firebase
-        const initializeFirebase = async () => {
-            try {
-                const response = await fetch('/api/firebase-config');
-                const firebaseConfig = await response.json();
-
-                if (firebaseConfig.apiKey) {
-                    app = firebase.initializeApp(firebaseConfig);
-                    auth = firebase.auth();
-                    db = firebase.firestore();
-                    console.log("Firebase inicializado com sucesso!");
-                    setupAuthListener();
-                } else {
-                    console.error("Configuração do Firebase não encontrada. Verifique suas variáveis de ambiente na Vercel.");
-                    authStatusDiv.innerHTML = `<p class="text-red-500">Erro: Credenciais do Firebase não configuradas.</p>`;
-                }
-            } catch (error) {
-                console.error("Erro ao buscar a configuração do Firebase:", error);
-                authStatusDiv.innerHTML = `<p class="text-red-500">Erro: Não foi possível conectar ao Firebase.</p>`;
-            }
-        };
-
         // Get references to input elements
         const hourlyRateInput = document.getElementById('hourlyRate');
         const annualEarningsUSDInput = document.getElementById('annualEarningsUSD');
@@ -738,10 +665,6 @@
         const activityTypeSelect = document.getElementById('activityType');
         const activityTypeGroup = document.getElementById('activityTypeGroup');
         const monthlyGrossSalaryInput = document.getElementById('monthlyGrossSalary');
-
-        // Get references to auth elements
-        const googleSignInBtn = document.getElementById('googleSignInBtn');
-        const authStatusDiv = document.getElementById('authStatus');
 
         // Get references to currency status elements
         const fetchRatesButton = document.getElementById('fetchRatesButton');
@@ -796,8 +719,8 @@
 
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
-        const MONTHLY_WORK_DAYS = 22;
-        const SALARY_MINIMUM_2025 = 1518.00;
+        const MONTHLY_WORK_DAYS = 22; // Average working days per month
+        const SALARY_MINIMUM_2025 = 1518.00; // Salário mínimo de 2025 (exemplo, pode variar)
 
         // INSS contribution table for 2025
         const INSS_TABLE_2025 = [
@@ -809,7 +732,7 @@
 
         // Simples Nacional Tables (Simplified for demonstration) - 2025 values
         const SIMPLES_NACIONAL_TABLES = {
-            comercio: [
+            comercio: [ // Anexo I
                 { rbt12_max: 180000, aliq: 0.04, pd: 0 },
                 { rbt12_max: 360000, aliq: 0.073, pd: 5940 },
                 { rbt12_max: 720000, aliq: 0.095, pd: 13860 },
@@ -817,7 +740,7 @@
                 { rbt12_max: 3600000, aliq: 0.143, pd: 87300 },
                 { rbt12_max: 4800000, aliq: 0.19, pd: 378000 }
             ],
-            servicos_geral: [
+            servicos_geral: [ // Anexo III
                 { rbt12_max: 180000, aliq: 0.06, pd: 0 },
                 { rbt12_max: 360000, aliq: 0.112, pd: 9360 },
                 { rbt12_max: 720000, aliq: 0.135, pd: 17640 },
@@ -825,7 +748,7 @@
                 { rbt12_max: 3600000, aliq: 0.21, pd: 125640 },
                 { rbt12_max: 4800000, aliq: 0.33, pd: 648000 }
             ],
-            servicos_intelectual: [
+            servicos_intelectual: [ // Anexo V (Alto Fator R - simplificado, sem cálculo do Fator R)
                 { rbt12_max: 180000, aliq: 0.155, pd: 0 },
                 { rbt12_max: 360000, aliq: 0.18, pd: 4500 },
                 { rbt12_max: 720000, aliq: 0.195, pd: 9900 },
@@ -837,8 +760,8 @@
 
         // Health Plan Costs (Monthly Estimates based on research)
         const HEALTH_PLAN_COSTS = {
-            adult_33_34_years: 850.00,
-            child_0_18_years: 350.00
+            adult_33_34_years: 850.00, // Adjusted average for this age range
+            child_0_18_years: 350.00 // Average for babies/children
         };
 
         // Function to format numbers as currency
@@ -905,36 +828,36 @@
         };
 
         // Function to add a new expense field
-        const addExpenseField = (description = '', value = 0) => {
+        const addExpenseField = () => {
             const expenseItem = document.createElement('div');
             expenseItem.classList.add('additional-expense-item');
 
             const expenseId = `expense-${Date.now()}`;
-            expenseItem.id = expenseId;
+            expenseItem.id = expenseId; // Set ID for easy removal
             expenseItem.innerHTML = `
                 <div class="input-group">
                     <label for="${expenseId}-desc">Descrição:</label>
-                    <input type="text" id="${expenseId}-desc" class="w-full" value="${description}">
+                    <input type="text" id="${expenseId}-desc" class="w-full">
                 </div>
                 <div class="input-group">
                     <label for="${expenseId}-value">Valor Mensal (BRL):</label>
-                    <input type="number" id="${expenseId}-value" value="${value}" step="0.01" min="0" class="w-full">
+                    <input type="number" id="${expenseId}-value" value="0" step="0.01" min="0" class="w-full">
                 </div>
                 <button type="button" onclick="removeExpenseField('${expenseId}')"><i class="fas fa-times"></i></button>
             `;
             additionalExpensesContainer.appendChild(expenseItem);
 
+            // Add event listeners to new inputs
             const newExpenseInput = document.getElementById(`${expenseId}-value`);
-            newExpenseInput.addEventListener('input', calculateAndSave);
-            document.getElementById(`${expenseId}-desc`).addEventListener('input', calculateAndSave);
+            newExpenseInput.addEventListener('input', calculateEarnings);
         };
 
         // Function to remove an expense field
-        window.removeExpenseField = async (id) => {
+        window.removeExpenseField = (id) => {
             const expenseElement = document.getElementById(id);
             if (expenseElement) {
                 expenseElement.remove();
-                await calculateAndSave();
+                calculateEarnings(); // Recalculate after removing
             }
         };
 
@@ -972,6 +895,7 @@
                     monthlyINSS = (salaryToCalculate * lastRange.aliq) - lastRange.pd;
                     effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
                 } else {
+                    // For salaries above the table max, use the max values
                     const lastAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
                     const lastPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
                     monthlyINSS = (maxSalary * lastAliq) - lastPd;
@@ -1206,88 +1130,34 @@
             budgetPersonalExpenses.textContent = formatCurrency(personalExpensesAmount, 'R$');
         };
 
-        // --- Firebase Auth and Firestore Logic ---
-        let user;
-
-        const setupAuthListener = () => {
-            auth.onAuthStateChanged((loggedInUser) => {
-                if (loggedInUser) {
-                    user = loggedInUser;
-                    const userDisplayName = user.displayName || 'Usuário';
-                    authStatusDiv.innerHTML = `
-                        <p class="mb-2">Olá, <strong>${userDisplayName}</strong>! Suas despesas estão salvas.</p>
-                        <button id="googleSignOutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Sair</button>
-                    `;
-                    document.getElementById('googleSignOutBtn').addEventListener('click', () => auth.signOut());
-                    loadUserExpenses(user.uid);
-                } else {
-                    user = null;
-                    authStatusDiv.innerHTML = `
-                        <button id="googleSignInBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center mx-auto">
-                            <i class="fab fa-google mr-2"></i> Entrar com o Google
-                        </button>
-                    `;
-                    if (document.getElementById('googleSignInBtn')) {
-                        document.getElementById('googleSignInBtn').addEventListener('click', () => {
-                            const provider = new firebase.auth.GoogleAuthProvider();
-                            auth.signInWithPopup(provider);
-                        });
-                    }
-                    additionalExpensesContainer.innerHTML = '';
-                    addExpenseField();
-                    calculateAndSave();
-                }
-            });
-        }
-
-        const loadUserExpenses = async (uid) => {
-            if (db) {
-                const userDoc = await db.collection('users').doc(uid).get();
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    if (userData.expenses) {
-                        additionalExpensesContainer.innerHTML = ''; // Clear existing default expense
-                        userData.expenses.forEach(expense => {
-                            addExpenseField(expense.description, expense.value);
-                        });
-                    }
-                }
-            }
-            calculateAndSave();
-        };
-
-        const saveUserExpenses = async () => {
-            if (user && db) {
-                const expenses = [];
-                document.querySelectorAll('.additional-expense-item').forEach(item => {
-                    const description = item.querySelector('input[type="text"]').value;
-                    const value = parseFloat(item.querySelector('input[type="number"]').value) || 0;
-                    expenses.push({ description, value });
-                });
-                await db.collection('users').doc(user.uid).set({ expenses });
-            }
-        };
-
-        const calculateAndSave = async () => {
+        // Event Listeners
+        hourlyRateInput.addEventListener('input', () => {
+            annualEarningsUSDInput.value = '';
             calculateEarnings();
-            if (user && db) { // Only save if user is logged in
-                await saveUserExpenses();
-            }
-        };
-
-        document.querySelectorAll('input:not([id^="expense-"]), select').forEach(input => {
-            input.addEventListener('input', calculateAndSave);
-            input.addEventListener('change', calculateAndSave);
         });
+        annualEarningsUSDInput.addEventListener('input', () => {
+            hourlyRateInput.value = '';
+            calculateEarnings();
+        });
+        annualEarningsEURInput.addEventListener('input', calculateEarnings);
+        hoursPerDayInput.addEventListener('input', calculateEarnings);
+        daysPerWeekInput.addEventListener('input', calculateEarnings);
+        usdToBrlRateInput.addEventListener('input', calculateEarnings);
+        eurToBrlRateInput.addEventListener('input', calculateEarnings);
 
-        addExpenseButton.addEventListener('click', () => {
-            addExpenseField();
-            if (user) { // Only save if user is logged in
-                calculateAndSave();
+        monthlyGrossSalaryInput.addEventListener('input', calculateEarnings);
+        additionalExpensesContainer.addEventListener('input', calculateEarnings);
+        addExpenseButton.addEventListener('click', addExpenseField);
+
+        companyTypeSelect.addEventListener('change', () => {
+            if (companyTypeSelect.value === 'MEI') {
+                activityTypeGroup.classList.add('hidden');
             } else {
-                calculateEarnings();
+                activityTypeGroup.classList.remove('hidden');
             }
+            calculateEarnings();
         });
+        activityTypeSelect.addEventListener('change', calculateEarnings);
 
         fetchRatesButton.addEventListener('click', fetchCurrencyRates);
 
@@ -1297,8 +1167,8 @@
             } else {
                 activityTypeGroup.classList.remove('hidden');
             }
-
-            initializeFirebase();
+            addExpenseField(); // Add one initial expense field
+            calculateEarnings();
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
         });
