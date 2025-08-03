@@ -121,7 +121,7 @@
             border-radius: 1rem;
             /* Rounded cards */
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -271,7 +271,7 @@
             padding: 1.25rem;
             border-radius: 1rem;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -315,15 +315,65 @@
         .budget-card.personal-expenses-card p {
             color: #581c87;
         }
+
+        .budget-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .budget-buttons button {
+            background-color: #cbd5e1;
+            color: #334155;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .budget-buttons button.active,
+        .budget-buttons button:hover {
+            background-color: #94a3b8;
+            color: white;
+        }
+
+        /* Estilo para a base de divisão */
+        #budgetTotalInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #budgetTotalInfo p {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.25rem;
+        }
+
+        #budgetTotalInfo .value {
+            font-size: 2rem;
+            /* Aumentado para destacar mais */
+            font-weight: 800;
+            color: #1d4ed8;
+            margin-top: 0;
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
-    <div class="container">
-        <h1 class="section-title">Calculadora de Ganhos</h1>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6 flex flex-col">
+        <h1 class="section-title">Converta e Planeje</h1>
 
         <!-- Seção de Entradas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="input-group">
                 <label for="hourlyRate">Valor Hora (USD):</label>
                 <input type="number" id="hourlyRate" value="44" step="0.01" min="0" class="w-full">
@@ -372,19 +422,20 @@
             <div class="input-group">
                 <label for="usdToBrlRate">Taxa de Câmbio (USD para BRL):</label>
                 <input type="number" id="usdToBrlRate" value="5.58" step="0.001" min="0" class="w-full" disabled>
-                <!-- Disabled for API control -->
                 <p id="errorUsdToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
             <div class="input-group">
                 <label for="eurToBrlRate">Taxa de Câmbio (EUR para BRL):</label>
                 <input type="number" id="eurToBrlRate" value="6.00" step="0.001" min="0" class="w-full" disabled>
-                <!-- Disabled for API control -->
                 <p id="errorEurToBrlRate" class="error-message hidden">Por favor, insira um número válido.</p>
             </div>
         </div>
 
         <div class="currency-status">
-            <button id="fetchRatesButton">Atualizar Cotações</button>
+            <button id="fetchRatesButton"
+                class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">
+                Atualizar Cotações
+            </button>
             <span id="loadingIndicator" class="loading-indicator hidden">Atualizando cotações...</span>
             <span>Última atualização: <span id="lastUpdated">--:--</span></span>
         </div>
@@ -618,22 +669,50 @@
             </div>
         </div>
 
-        <h2 class="section-title mt-8">Sugestão de Concentração de Ganhos</h2>
+        <h2 class="section-title mt-8">Sugestão de Divisão de Orçamento</h2>
+
+        <div class="budget-buttons">
+            <button id="rule702010Btn" class="active">70/20/10</button>
+            <button id="rule503020Btn">50/30/20</button>
+            <button id="customRuleBtn">Personalizar</button>
+        </div>
+
+        <div id="customBudgetInputs" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 hidden">
+            <div class="input-group">
+                <label for="customInvest">Investir/Poupar (%):</label>
+                <input type="number" id="customInvest" value="70" min="0" max="100" class="w-full text-center">
+            </div>
+            <div class="input-group">
+                <label for="customFixed">Despesas Fixas (%):</label>
+                <input type="number" id="customFixed" value="20" min="0" max="100" class="w-full text-center">
+            </div>
+            <div class="input-group">
+                <label for="customPersonal">Gastos Pessoais (%):</label>
+                <input type="number" id="customPersonal" value="10" min="0" max="100" class="w-full text-center">
+            </div>
+        </div>
+
+        <div id="budgetTotalInfo" class="budget-info text-center text-gray-700 mb-4 font-semibold">
+            <p>Base para a divisão: <span id="budgetTotalLabel">Ganhos Líquidos Mensais</span></p>
+            <p><span id="budgetTotalValue" class="value text-xl font-bold text-indigo-600">R$0.00</span></p>
+            <p id="budgetError" class="error-message hidden mt-2">A soma das porcentagens não pode exceder 100%.</p>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="budget-card invest-card">
                 <h3>70% para Poupar / Investir</h3>
-                <p id="budgetInvestment">R$0.00</p>
                 <p class="text-sm text-gray-500">Reserva de emergência, aposentadoria, etc.</p>
+                <p id="budgetInvestment" class="mt-2">R$0.00</p>
             </div>
             <div class="budget-card fixed-expenses-card">
                 <h3>20% para Despesas Fixas</h3>
-                <p id="budgetFixedExpenses">R$0.00</p>
                 <p class="text-sm text-gray-500">Aluguel, contas, etc.</p>
+                <p id="budgetFixedExpenses" class="mt-2">R$0.00</p>
             </div>
             <div class="budget-card personal-expenses-card">
                 <h3>10% para Gastos Pessoais</h3>
-                <p id="budgetPersonalExpenses">R$0.00</p>
                 <p class="text-sm text-gray-500">Lazer, hobbies, etc.</p>
+                <p id="budgetPersonalExpenses" class="mt-2">R$0.00</p>
             </div>
         </div>
         <div class="disclaimer">
@@ -647,8 +726,7 @@
                 regras de contribuição, especialmente para quem mora no exterior ou tem regimes tributários específicos,
                 são complexas e exigem a orientação de um contador para um planejamento adequado. Para um cálculo
                 preciso e para garantir seus direitos previdenciários e fiscais, <strong>sempre consulte um
-                    profissional.</strong>
-            </p>
+                    profissional.</strong></p>
         </div>
     </div>
 
@@ -680,6 +758,7 @@
         const errorUsdToBrlRate = document.getElementById('errorUsdToBrlRate');
         const errorEurToBrlRate = document.getElementById('errorEurToBrlRate');
         const errorMonthlyGrossSalary = document.getElementById('errorMonthlyGrossSalary');
+        const budgetError = document.getElementById('budgetError');
 
         // Get references to tax results elements
         const taxCompanyType = document.getElementById('taxCompanyType');
@@ -713,9 +792,18 @@
         const finalNetDailyBRL = document.getElementById('finalNetDailyBRL');
 
         // Get references to budget suggestion elements
+        const budgetTotalLabel = document.getElementById('budgetTotalLabel');
+        const budgetTotalValue = document.getElementById('budgetTotalValue');
         const budgetInvestment = document.getElementById('budgetInvestment');
         const budgetFixedExpenses = document.getElementById('budgetFixedExpenses');
         const budgetPersonalExpenses = document.getElementById('budgetPersonalExpenses');
+        const rule702010Btn = document.getElementById('rule702010Btn');
+        const rule503020Btn = document.getElementById('rule503020Btn');
+        const customRuleBtn = document.getElementById('customRuleBtn');
+        const customBudgetInputs = document.getElementById('customBudgetInputs');
+        const customInvest = document.getElementById('customInvest');
+        const customFixed = document.getElementById('customFixed');
+        const customPersonal = document.getElementById('customPersonal');
 
         // Constants for calculations
         const WEEKS_PER_YEAR = 52;
@@ -760,8 +848,8 @@
 
         // Health Plan Costs (Monthly Estimates based on research)
         const HEALTH_PLAN_COSTS = {
-            adult_33_34_years: 850.00, // Adjusted average for this age range
-            child_0_18_years: 350.00 // Average for babies/children
+            adult_33_34_years: 850.00,
+            child_0_18_years: 350.00
         };
 
         // Function to format numbers as currency
@@ -828,26 +916,25 @@
         };
 
         // Function to add a new expense field
-        const addExpenseField = () => {
+        const addExpenseField = (description = '', value = 0) => {
             const expenseItem = document.createElement('div');
             expenseItem.classList.add('additional-expense-item');
 
             const expenseId = `expense-${Date.now()}`;
-            expenseItem.id = expenseId; // Set ID for easy removal
+            expenseItem.id = expenseId;
             expenseItem.innerHTML = `
                 <div class="input-group">
                     <label for="${expenseId}-desc">Descrição:</label>
-                    <input type="text" id="${expenseId}-desc" class="w-full">
+                    <input type="text" id="${expenseId}-desc" class="w-full" value="${description}">
                 </div>
                 <div class="input-group">
                     <label for="${expenseId}-value">Valor Mensal (BRL):</label>
-                    <input type="number" id="${expenseId}-value" value="0" step="0.01" min="0" class="w-full">
+                    <input type="number" id="${expenseId}-value" value="${value}" step="0.01" min="0" class="w-full">
                 </div>
                 <button type="button" onclick="removeExpenseField('${expenseId}')"><i class="fas fa-times"></i></button>
             `;
             additionalExpensesContainer.appendChild(expenseItem);
 
-            // Add event listeners to new inputs
             const newExpenseInput = document.getElementById(`${expenseId}-value`);
             newExpenseInput.addEventListener('input', calculateEarnings);
         };
@@ -857,7 +944,7 @@
             const expenseElement = document.getElementById(id);
             if (expenseElement) {
                 expenseElement.remove();
-                calculateEarnings(); // Recalculate after removing
+                calculateEarnings();
             }
         };
 
@@ -895,7 +982,6 @@
                     monthlyINSS = (salaryToCalculate * lastRange.aliq) - lastRange.pd;
                     effectivePercentage = (monthlyINSS / monthlyGrossSalary) * 100;
                 } else {
-                    // For salaries above the table max, use the max values
                     const lastAliq = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].aliq;
                     const lastPd = INSS_TABLE_2025[INSS_TABLE_2025.length - 1].pd;
                     monthlyINSS = (maxSalary * lastAliq) - lastPd;
@@ -979,6 +1065,55 @@
             return { taxAmount };
         };
 
+        const calculateBudget = (netMonthly) => {
+            const rule702010Active = rule702010Btn.classList.contains('active');
+            const rule503020Active = rule503020Btn.classList.contains('active');
+            const customRuleActive = customRuleBtn.classList.contains('active');
+
+            let investPercentage, fixedPercentage, personalPercentage;
+
+            if (customRuleActive) {
+                const customInvestValue = parseFloat(customInvest.value) || 0;
+                const customFixedValue = parseFloat(customFixed.value) || 0;
+                const customPersonalValue = parseFloat(customPersonal.value) || 0;
+                const totalPercentage = customInvestValue + customFixedValue + customPersonalValue;
+
+                if (totalPercentage > 100) {
+                    budgetError.classList.remove('hidden');
+                    return; // Stop calculation if sum exceeds 100%
+                } else {
+                    budgetError.classList.add('hidden');
+                    investPercentage = customInvestValue;
+                    fixedPercentage = customFixedValue;
+                    personalPercentage = customPersonalValue;
+                }
+            } else if (rule503020Active) {
+                investPercentage = 50;
+                fixedPercentage = 30;
+                personalPercentage = 20;
+            } else { // Default to 70/20/10
+                investPercentage = 70;
+                fixedPercentage = 20;
+                personalPercentage = 10;
+            }
+
+            budgetTotalValue.textContent = formatCurrency(netMonthly, 'R$');
+
+            budgetInvestment.textContent = formatCurrency(netMonthly * (investPercentage / 100), 'R$');
+            budgetFixedExpenses.textContent = formatCurrency(netMonthly * (fixedPercentage / 100), 'R$');
+            budgetPersonalExpenses.textContent = formatCurrency(netMonthly * (personalPercentage / 100), 'R$');
+
+            // Update card titles
+            document.querySelector('.invest-card h3').textContent = `${investPercentage}% para Poupar / Investir`;
+            document.querySelector('.fixed-expenses-card h3').textContent = `${fixedPercentage}% para Despesas Fixas`;
+            document.querySelector('.personal-expenses-card h3').textContent = `${personalPercentage}% para Gastos Pessoais`;
+
+            if (customRuleActive) {
+                customBudgetInputs.classList.remove('hidden');
+            } else {
+                customBudgetInputs.classList.add('hidden');
+            }
+        };
 
         // Main calculation function
         const calculateEarnings = () => {
@@ -1118,46 +1253,43 @@
             finalNetWeeklyBRL.textContent = formatCurrency(finalNetWeekly, 'R$');
             finalNetDailyBRL.textContent = formatCurrency(finalNetDaily, 'R$');
 
-            // Calculate and display budget suggestions
-            const netMonthlyForBudget = finalNetMonthly;
-
-            const investmentAmount = netMonthlyForBudget * 0.7;
-            const fixedExpensesAmount = netMonthlyForBudget * 0.2;
-            const personalExpensesAmount = netMonthlyForBudget * 0.1;
-
-            budgetInvestment.textContent = formatCurrency(investmentAmount, 'R$');
-            budgetFixedExpenses.textContent = formatCurrency(fixedExpensesAmount, 'R$');
-            budgetPersonalExpenses.textContent = formatCurrency(personalExpensesAmount, 'R$');
+            calculateBudget(finalNetMonthly);
         };
 
         // Event Listeners
-        hourlyRateInput.addEventListener('input', () => {
-            annualEarningsUSDInput.value = '';
-            calculateEarnings();
+        const allInputs = document.querySelectorAll('input, select');
+        allInputs.forEach(input => {
+            input.addEventListener('input', calculateEarnings);
+            input.addEventListener('change', calculateEarnings);
         });
-        annualEarningsUSDInput.addEventListener('input', () => {
-            hourlyRateInput.value = '';
-            calculateEarnings();
-        });
-        annualEarningsEURInput.addEventListener('input', calculateEarnings);
-        hoursPerDayInput.addEventListener('input', calculateEarnings);
-        daysPerWeekInput.addEventListener('input', calculateEarnings);
-        usdToBrlRateInput.addEventListener('input', calculateEarnings);
-        eurToBrlRateInput.addEventListener('input', calculateEarnings);
 
-        monthlyGrossSalaryInput.addEventListener('input', calculateEarnings);
-        additionalExpensesContainer.addEventListener('input', calculateEarnings);
-        addExpenseButton.addEventListener('click', addExpenseField);
+        addExpenseButton.addEventListener('click', () => {
+            addExpenseField();
+        });
 
-        companyTypeSelect.addEventListener('change', () => {
-            if (companyTypeSelect.value === 'MEI') {
-                activityTypeGroup.classList.add('hidden');
-            } else {
-                activityTypeGroup.classList.remove('hidden');
-            }
+        // Event listeners for budget buttons
+        rule702010Btn.addEventListener('click', () => {
+            rule702010Btn.classList.add('active');
+            rule503020Btn.classList.remove('active');
+            customRuleBtn.classList.remove('active');
             calculateEarnings();
         });
-        activityTypeSelect.addEventListener('change', calculateEarnings);
+        rule503020Btn.addEventListener('click', () => {
+            rule702010Btn.classList.remove('active');
+            rule503020Btn.classList.add('active');
+            customRuleBtn.classList.remove('active');
+            calculateEarnings();
+        });
+        customRuleBtn.addEventListener('click', () => {
+            rule702010Btn.classList.remove('active');
+            rule503020Btn.classList.remove('active');
+            customRuleBtn.classList.add('active');
+            calculateEarnings();
+        });
+        customInvest.addEventListener('input', calculateEarnings);
+        customFixed.addEventListener('input', calculateEarnings);
+        customPersonal.addEventListener('input', calculateEarnings);
+
 
         fetchRatesButton.addEventListener('click', fetchCurrencyRates);
 
