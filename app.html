@@ -439,31 +439,64 @@
         
         <div class="math-flow-box">
             <div class="math-item">
-                <span class="label">Faturamento Bruto Anual</span>
+                <span class="label">Faturamento Bruto</span>
                 <span id="flowGross" class="val gross">R$0.00</span>
+                <span id="flowGrossMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
             </div>
             <div class="math-operator"><i class="fas fa-minus"></i></div>
             <div class="math-item">
-                <span class="label">Total de Despesas Anuais</span>
+                <span class="label">Total de Despesas</span>
                 <span id="flowDeductions" class="val deduction">R$0.00</span>
-                <span class="text-xs text-gray-500 mt-1">(Impostos + INSS + Saúde + Outras)</span>
+                <span id="flowDeductionsMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
+                <span class="text-xs text-gray-400 mt-1">(Impostos + INSS + Saúde + Outras)</span>
             </div>
             <div class="math-operator"><i class="fas fa-equals"></i></div>
             <div class="math-item">
-                <span class="label">Líquido Anual</span>
+                <span class="label">Líquido</span>
                 <span id="flowNet" class="val net">R$0.00</span>
+                <span id="flowNetMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="result-card">
-                <h3>Custos Totais Anuais Separados</h3>
-                <ul class="text-left w-full max-w-sm mt-4 text-gray-700 space-y-2">
-                    <li class="flex justify-between border-b pb-1"><span>Impostos:</span> <strong id="summaryTax">R$0.00</strong></li>
-                    <li class="flex justify-between border-b pb-1"><span>Plano de Saúde:</span> <strong id="summaryHealth">R$0.00</strong></li>
-                    <li class="flex justify-between border-b pb-1"><span>INSS:</span> <strong id="summaryINSS">R$0.00</strong></li>
-                    <li class="flex justify-between border-b pb-1"><span>Outras Despesas:</span> <strong id="summaryOther">R$0.00</strong></li>
-                    <li class="flex justify-between text-lg mt-2 text-red-600"><strong>Total Despesas:</strong> <strong id="summaryTotalDeductions">R$0.00</strong></li>
+                <h3>Custos Totais (Anual e Mensal)</h3>
+                <ul class="text-left w-full max-w-md mt-4 text-gray-700 space-y-3">
+                    <li class="flex justify-between items-center border-b pb-2">
+                        <span>Impostos:</span> 
+                        <div class="text-right">
+                            <strong id="summaryTax">R$0.00</strong><br>
+                            <span class="text-xs text-gray-500" id="summaryTaxMonthly">R$0.00/mês</span>
+                        </div>
+                    </li>
+                    <li class="flex justify-between items-center border-b pb-2">
+                        <span>Plano de Saúde:</span> 
+                        <div class="text-right">
+                            <strong id="summaryHealth">R$0.00</strong><br>
+                            <span class="text-xs text-gray-500" id="summaryHealthMonthly">R$0.00/mês</span>
+                        </div>
+                    </li>
+                    <li class="flex justify-between items-center border-b pb-2">
+                        <span>INSS:</span> 
+                        <div class="text-right">
+                            <strong id="summaryINSS">R$0.00</strong><br>
+                            <span class="text-xs text-gray-500" id="summaryINSSMonthly">R$0.00/mês</span>
+                        </div>
+                    </li>
+                    <li class="flex justify-between items-center border-b pb-2">
+                        <span>Outras Despesas:</span> 
+                        <div class="text-right">
+                            <strong id="summaryOther">R$0.00</strong><br>
+                            <span class="text-xs text-gray-500" id="summaryOtherMonthly">R$0.00/mês</span>
+                        </div>
+                    </li>
+                    <li class="flex justify-between items-center text-lg mt-2 text-red-600">
+                        <strong>Total Despesas:</strong> 
+                        <div class="text-right">
+                            <strong id="summaryTotalDeductions">R$0.00</strong><br>
+                            <span class="text-sm text-red-400" id="summaryTotalDeductionsMonthly">R$0.00/mês</span>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div class="result-card">
@@ -738,15 +771,29 @@
             
             // Populating Summary Section
             document.getElementById('summaryTax').textContent = formatCurrency(taxAmount, 'R$');
+            document.getElementById('summaryTaxMonthly').textContent = formatCurrency(taxAmount / 12, 'R$') + '/mês';
+            
             document.getElementById('summaryHealth').textContent = formatCurrency(healthAnnual, 'R$');
+            document.getElementById('summaryHealthMonthly').textContent = formatCurrency(healthAnnual / 12, 'R$') + '/mês';
+            
             document.getElementById('summaryINSS').textContent = formatCurrency(mINSS * 12, 'R$');
+            document.getElementById('summaryINSSMonthly').textContent = formatCurrency(mINSS, 'R$') + '/mês';
+            
             document.getElementById('summaryOther').textContent = formatCurrency(addExpMonthly * 12, 'R$');
+            document.getElementById('summaryOtherMonthly').textContent = formatCurrency(addExpMonthly, 'R$') + '/mês';
+            
             document.getElementById('summaryTotalDeductions').textContent = formatCurrency(totalDeductions, 'R$');
+            document.getElementById('summaryTotalDeductionsMonthly').textContent = formatCurrency(totalDeductions / 12, 'R$') + '/mês';
 
             // Updating Flow Elements
             document.getElementById('flowGross').textContent = formatCurrency(grossAnnualBRL, 'R$');
+            document.getElementById('flowGrossMonthly').textContent = formatCurrency(grossAnnualBRL / 12, 'R$') + '/mês';
+            
             document.getElementById('flowDeductions').textContent = formatCurrency(totalDeductions, 'R$');
+            document.getElementById('flowDeductionsMonthly').textContent = formatCurrency(totalDeductions / 12, 'R$') + '/mês';
+            
             document.getElementById('flowNet').textContent = formatCurrency(finalNetAnnual, 'R$');
+            document.getElementById('flowNetMonthly').textContent = formatCurrency(finalNetAnnual / 12, 'R$') + '/mês';
 
             // Updating Net fields
             document.getElementById('finalNetAnnualBRL').textContent = formatCurrency(finalNetAnnual, 'R$');
