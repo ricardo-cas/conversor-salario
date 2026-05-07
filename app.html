@@ -265,7 +265,6 @@
             gap: 1rem;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 2rem;
         }
         @media (min-width: 768px) {
             .math-flow-box {
@@ -285,12 +284,12 @@
             color: #64748b;
         }
         .math-item .val {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 800;
         }
         .math-item .val.gross { color: #16a34a; }
         .math-item .val.deduction { color: #dc2626; }
-        .math-item .val.net { color: #2563eb; font-size: 2rem;}
+        .math-item .val.net { color: #2563eb; font-size: 2.25rem;}
         .math-operator {
             font-size: 2rem;
             color: #cbd5e1;
@@ -435,26 +434,45 @@
         </div>
         
         <!-- Líquido Final -->
-        <h2 class="section-title mt-12">Resumo Líquido Final (BRL)</h2>
+        <h2 class="section-title mt-12 mb-8">Resumo Líquido Final (BRL)</h2>
         
-        <div class="math-flow-box">
+        <!-- FLUXO ANUAL -->
+        <h3 class="text-lg font-bold text-gray-600 text-center mb-3 uppercase tracking-wider">Visão Anual</h3>
+        <div class="math-flow-box mb-8">
             <div class="math-item">
                 <span class="label">Faturamento Bruto</span>
                 <span id="flowGross" class="val gross">R$0.00</span>
-                <span id="flowGrossMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
             </div>
             <div class="math-operator"><i class="fas fa-minus"></i></div>
             <div class="math-item">
                 <span class="label">Total de Despesas</span>
                 <span id="flowDeductions" class="val deduction">R$0.00</span>
-                <span id="flowDeductionsMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
                 <span class="text-xs text-gray-400 mt-1">(Impostos + INSS + Saúde + Outras)</span>
             </div>
             <div class="math-operator"><i class="fas fa-equals"></i></div>
             <div class="math-item">
                 <span class="label">Líquido</span>
                 <span id="flowNet" class="val net">R$0.00</span>
-                <span id="flowNetMonthly" class="text-sm font-semibold text-gray-500 mt-1">R$0.00/mês</span>
+            </div>
+        </div>
+
+        <!-- FLUXO MENSAL DEDICADO -->
+        <h3 class="text-lg font-bold text-gray-600 text-center mb-3 uppercase tracking-wider">Visão Mensal</h3>
+        <div class="math-flow-box mb-8">
+            <div class="math-item">
+                <span class="label">Faturamento Bruto Mensal</span>
+                <span id="flowGrossOnlyMonthly" class="val gross">R$0.00</span>
+            </div>
+            <div class="math-operator"><i class="fas fa-minus"></i></div>
+            <div class="math-item">
+                <span class="label">Total de Despesas Mensais</span>
+                <span id="flowDeductionsOnlyMonthly" class="val deduction">R$0.00</span>
+                <span class="text-xs text-gray-400 mt-1">(Impostos + INSS + Saúde + Outras)</span>
+            </div>
+            <div class="math-operator"><i class="fas fa-equals"></i></div>
+            <div class="math-item">
+                <span class="label">Líquido Mensal</span>
+                <span id="flowNetOnlyMonthly" class="val net">R$0.00</span>
             </div>
         </div>
 
@@ -785,15 +803,16 @@
             document.getElementById('summaryTotalDeductions').textContent = formatCurrency(totalDeductions, 'R$');
             document.getElementById('summaryTotalDeductionsMonthly').textContent = formatCurrency(totalDeductions / 12, 'R$') + '/mês';
 
-            // Updating Flow Elements
+            // Updating Flow Elements Anual
             document.getElementById('flowGross').textContent = formatCurrency(grossAnnualBRL, 'R$');
-            document.getElementById('flowGrossMonthly').textContent = formatCurrency(grossAnnualBRL / 12, 'R$') + '/mês';
-            
             document.getElementById('flowDeductions').textContent = formatCurrency(totalDeductions, 'R$');
-            document.getElementById('flowDeductionsMonthly').textContent = formatCurrency(totalDeductions / 12, 'R$') + '/mês';
-            
             document.getElementById('flowNet').textContent = formatCurrency(finalNetAnnual, 'R$');
-            document.getElementById('flowNetMonthly').textContent = formatCurrency(finalNetAnnual / 12, 'R$') + '/mês';
+
+            // Updating Flow Elements Mensal
+            document.getElementById('flowGrossOnlyMonthly').textContent = formatCurrency(grossAnnualBRL / 12, 'R$');
+            document.getElementById('flowDeductionsOnlyMonthly').textContent = formatCurrency(totalDeductions / 12, 'R$');
+            document.getElementById('flowNetOnlyMonthly').textContent = formatCurrency(finalNetAnnual / 12, 'R$');
+
 
             // Updating Net fields
             document.getElementById('finalNetAnnualBRL').textContent = formatCurrency(finalNetAnnual, 'R$');
