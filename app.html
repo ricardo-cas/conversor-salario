@@ -160,6 +160,12 @@
             gap: 1rem;
             align-items: center;
         }
+        .additional-expense-item input[type="text"] {
+            width: 100%;
+        }
+        .additional-expense-item input[type="number"] {
+            width: 100%;
+        }
         .additional-expense-item button {
             background-color: #ef4444;
             color: white;
@@ -246,6 +252,49 @@
             font-size: 2rem;
             font-weight: 800;
             color: #1d4ed8;
+        }
+
+        /* Highlight box for math formula */
+        .math-flow-box {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) {
+            .math-flow-box {
+                flex-direction: row;
+                text-align: center;
+            }
+        }
+        .math-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .math-item .label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        .math-item .val {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .math-item .val.gross { color: #16a34a; }
+        .math-item .val.deduction { color: #dc2626; }
+        .math-item .val.net { color: #2563eb; font-size: 2rem;}
+        .math-operator {
+            font-size: 2rem;
+            color: #cbd5e1;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -363,9 +412,9 @@
         </div>
 
         <!-- Despesas -->
-        <h2 class="section-title mt-8">Simulação de Despesas (BRL)</h2>
+        <h2 class="section-title mt-8">Simulação de Despesas Essenciais (BRL)</h2>
         <div class="input-group mb-4">
-            <label for="monthlyGrossSalary">Salário Bruto Mensal (para INSS):</label>
+            <label for="monthlyGrossSalary">Salário Bruto Mensal (para cálculo do INSS):</label>
             <input type="number" id="monthlyGrossSalary" value="1518.00" step="0.01" min="0" class="w-full">
         </div>
         <div class="results-grid">
@@ -376,20 +425,60 @@
 
         <h3 class="subsection-title mt-8">Outras Despesas Mensais</h3>
         <div id="additionalExpensesContainer" class="additional-expenses-list"></div>
-        <button id="addExpenseButton" class="add-expense-button">
-            <i class="fas fa-plus"></i> Adicionar Despesa
-        </button>
+        <div class="flex flex-col md:flex-row justify-between items-center mt-4">
+            <button id="addExpenseButton" class="add-expense-button m-0 w-full md:w-auto">
+                <i class="fas fa-plus"></i> Adicionar Despesa
+            </button>
+            <div class="mt-4 md:mt-0 text-xl font-semibold text-gray-700 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+                Subtotal Mensal: <span id="additionalExpensesSubtotal" class="font-bold text-red-600">R$0.00</span>
+            </div>
+        </div>
         
         <!-- Líquido Final -->
-        <h2 class="section-title mt-8">Resumo Líquido Final (BRL)</h2>
-        <div class="results-grid">
-            <div class="result-card"><h3>Líquido Anual</h3><p id="finalNetAnnualBRL">R$0.00</p></div>
-            <div class="result-card"><h3>Líquido Mensal</h3><p id="finalNetMonthlyBRL">R$0.00</p></div>
-            <div class="result-card"><h3>Líquido Diário</h3><p id="finalNetDailyBRL">R$0.00</p></div>
+        <h2 class="section-title mt-12">Resumo Líquido Final (BRL)</h2>
+        
+        <div class="math-flow-box">
+            <div class="math-item">
+                <span class="label">Faturamento Bruto Anual</span>
+                <span id="flowGross" class="val gross">R$0.00</span>
+            </div>
+            <div class="math-operator"><i class="fas fa-minus"></i></div>
+            <div class="math-item">
+                <span class="label">Total de Despesas Anuais</span>
+                <span id="flowDeductions" class="val deduction">R$0.00</span>
+                <span class="text-xs text-gray-500 mt-1">(Impostos + INSS + Saúde + Outras)</span>
+            </div>
+            <div class="math-operator"><i class="fas fa-equals"></i></div>
+            <div class="math-item">
+                <span class="label">Líquido Anual</span>
+                <span id="flowNet" class="val net">R$0.00</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="result-card">
+                <h3>Custos Totais Anuais Separados</h3>
+                <ul class="text-left w-full max-w-sm mt-4 text-gray-700 space-y-2">
+                    <li class="flex justify-between border-b pb-1"><span>Impostos:</span> <strong id="summaryTax">R$0.00</strong></li>
+                    <li class="flex justify-between border-b pb-1"><span>Plano de Saúde:</span> <strong id="summaryHealth">R$0.00</strong></li>
+                    <li class="flex justify-between border-b pb-1"><span>INSS:</span> <strong id="summaryINSS">R$0.00</strong></li>
+                    <li class="flex justify-between border-b pb-1"><span>Outras Despesas:</span> <strong id="summaryOther">R$0.00</strong></li>
+                    <li class="flex justify-between text-lg mt-2 text-red-600"><strong>Total Despesas:</strong> <strong id="summaryTotalDeductions">R$0.00</strong></li>
+                </ul>
+            </div>
+            <div class="result-card">
+                <h3>Sua Renda Líquida Calculada</h3>
+                <ul class="text-left w-full max-w-sm mt-4 text-gray-700 space-y-2">
+                    <li class="flex justify-between border-b pb-1"><span>Líquido Anual:</span> <strong id="finalNetAnnualBRL" class="text-blue-600">R$0.00</strong></li>
+                    <li class="flex justify-between border-b pb-1"><span>Líquido Mensal:</span> <strong id="finalNetMonthlyBRL" class="text-blue-600">R$0.00</strong></li>
+                    <li class="flex justify-between border-b pb-1"><span>Líquido Semanal:</span> <strong id="finalNetWeeklyBRL" class="text-blue-600">R$0.00</strong></li>
+                    <li class="flex justify-between pb-1"><span>Líquido Diário:</span> <strong id="finalNetDailyBRL" class="text-blue-600">R$0.00</strong></li>
+                </ul>
+            </div>
         </div>
 
         <!-- Orçamento -->
-        <h2 class="section-title mt-8">Divisão Sugerida de Orçamento</h2>
+        <h2 class="section-title mt-12">Divisão Sugerida de Orçamento</h2>
         <div class="budget-buttons">
             <button id="rule702010Btn" class="active">70/20/10</button>
             <button id="rule503020Btn">50/30/20</button>
@@ -403,7 +492,7 @@
         </div>
 
         <div id="budgetTotalInfo">
-            <p>Base: Ganhos Líquidos Mensais</p>
+            <p class="text-gray-500 uppercase font-semibold text-sm">Base: Renda Líquida Mensal</p>
             <p id="budgetTotalValue" class="value">R$0.00</p>
             <p id="budgetError" class="error-message hidden">A soma não pode exceder 100%.</p>
         </div>
@@ -415,7 +504,7 @@
         </div>
 
         <div class="disclaimer">
-            <p><strong>Aviso Importante:</strong> Esta ferramenta é uma simulação. Sempre consulte um contador para planejamento oficial.</p>
+            <p><strong>Aviso Importante:</strong> Esta ferramenta é uma simulação. As despesas configuradas (como plano de saúde e INSS) já estão sendo deduzidas corretamente do seu Valor Bruto para gerar a Renda Líquida base para o orçamento acima. Sempre consulte um contador para planejamento oficial.</p>
         </div>
     </div>
 
@@ -483,7 +572,7 @@
             const expenseItem = document.createElement('div');
             expenseItem.classList.add('additional-expense-item');
             
-            const expenseId = `expense-${Date.now()}`;
+            const expenseId = `expense-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
             expenseItem.id = expenseId;
             expenseItem.innerHTML = `
                 <div class="input-group">
@@ -492,7 +581,7 @@
                 </div>
                 <div class="input-group">
                     <label for="${expenseId}-value">Valor Mensal (BRL):</label>
-                    <input type="number" id="${expenseId}-value" value="${value}" step="0.01" min="0" class="w-full">
+                    <input type="number" id="${expenseId}-value" value="${value}" step="0.01" min="0" class="w-full" onchange="calculateEarnings()">
                 </div>
                 <button type="button" onclick="removeExpenseField('${expenseId}')"><i class="fas fa-times"></i></button>
             `;
@@ -640,16 +729,33 @@
             document.querySelectorAll('#additionalExpensesContainer input[type="number"]').forEach(i => {
                 addExpMonthly += parseFloat(i.value) || 0;
             });
+            document.getElementById('additionalExpensesSubtotal').textContent = formatCurrency(addExpMonthly, 'R$');
 
             const totalDeductions = taxAmount + (mINSS * 12) + healthAnnual + (addExpMonthly * 12);
             document.getElementById('finalTotalDeductions').textContent = formatCurrency(totalDeductions, 'R$');
 
             const finalNetAnnual = grossAnnualBRL - totalDeductions;
+            
+            // Populating Summary Section
+            document.getElementById('summaryTax').textContent = formatCurrency(taxAmount, 'R$');
+            document.getElementById('summaryHealth').textContent = formatCurrency(healthAnnual, 'R$');
+            document.getElementById('summaryINSS').textContent = formatCurrency(mINSS * 12, 'R$');
+            document.getElementById('summaryOther').textContent = formatCurrency(addExpMonthly * 12, 'R$');
+            document.getElementById('summaryTotalDeductions').textContent = formatCurrency(totalDeductions, 'R$');
+
+            // Updating Flow Elements
+            document.getElementById('flowGross').textContent = formatCurrency(grossAnnualBRL, 'R$');
+            document.getElementById('flowDeductions').textContent = formatCurrency(totalDeductions, 'R$');
+            document.getElementById('flowNet').textContent = formatCurrency(finalNetAnnual, 'R$');
+
+            // Updating Net fields
             document.getElementById('finalNetAnnualBRL').textContent = formatCurrency(finalNetAnnual, 'R$');
-            document.getElementById('finalNetMonthlyBRL').textContent = formatCurrency(finalNetAnnual / 12, 'R$');
+            const netMonthly = finalNetAnnual / 12;
+            document.getElementById('finalNetMonthlyBRL').textContent = formatCurrency(netMonthly, 'R$');
+            document.getElementById('finalNetWeeklyBRL').textContent = formatCurrency(finalNetAnnual / WEEKS_PER_YEAR, 'R$');
             document.getElementById('finalNetDailyBRL').textContent = formatCurrency(annualWorkDays > 0 ? finalNetAnnual / annualWorkDays : 0, 'R$');
 
-            calculateBudget(finalNetAnnual / 12);
+            calculateBudget(netMonthly);
         };
 
         const fetchCurrencyRates = async () => {
@@ -690,6 +796,14 @@
             document.getElementById('companyType').addEventListener('change', (e) => {
                 document.getElementById('activityTypeGroup').classList.toggle('hidden', e.target.value === 'MEI');
             });
+
+            // Adicionando as despesas fixas pré-definidas
+            addExpenseField('Aluguel', 2500);
+            addExpenseField('Água', 200);
+            addExpenseField('Conta de Luz', 300);
+            addExpenseField('Ração', 1600);
+            addExpenseField('Internet', 120);
+            addExpenseField('Celular + TV a cabo', 230);
 
             fetchCurrencyRates();
             setInterval(fetchCurrencyRates, 300000);
