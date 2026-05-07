@@ -221,6 +221,7 @@
         
         .budget-buttons {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
@@ -461,18 +462,18 @@
         <div class="math-flow-box mb-8">
             <div class="math-item">
                 <span class="label">Faturamento Bruto Mensal</span>
-                <span id="flowGrossOnlyMonthly" class="val gross">R$0.00</span>
+                <span id="flowGrossOnlyMonthly" class="val gross text-green-600">R$0.00</span>
             </div>
             <div class="math-operator"><i class="fas fa-minus"></i></div>
             <div class="math-item">
                 <span class="label">Total de Despesas Mensais</span>
-                <span id="flowDeductionsOnlyMonthly" class="val deduction">R$0.00</span>
+                <span id="flowDeductionsOnlyMonthly" class="val deduction text-red-600">R$0.00</span>
                 <span class="text-xs text-gray-400 mt-1">(Impostos + INSS + Saúde + Outras)</span>
             </div>
             <div class="math-operator"><i class="fas fa-equals"></i></div>
             <div class="math-item">
                 <span class="label">Líquido Mensal</span>
-                <span id="flowNetOnlyMonthly" class="val net">R$0.00</span>
+                <span id="flowNetOnlyMonthly" class="val net text-blue-600">R$0.00</span>
             </div>
         </div>
 
@@ -531,7 +532,8 @@
         <!-- Orçamento -->
         <h2 class="section-title mt-12">Divisão Sugerida de Orçamento</h2>
         <div class="budget-buttons">
-            <button id="rule702010Btn" class="active">70/20/10</button>
+            <button id="dynamicRuleBtn" class="active">Dinâmico (Real)</button>
+            <button id="rule702010Btn">70/20/10</button>
             <button id="rule503020Btn">50/30/20</button>
             <button id="customRuleBtn">Personalizar</button>
         </div>
@@ -549,9 +551,9 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="budget-card invest-card"><h3>70% Investimento</h3><p id="budgetInvestment" class="value">R$0.00</p></div>
-            <div class="budget-card fixed-expenses-card"><h3>20% Fixo</h3><p id="budgetFixedExpenses" class="value">R$0.00</p></div>
-            <div class="budget-card personal-expenses-card"><h3>10% Pessoal</h3><p id="budgetPersonalExpenses" class="value">R$0.00</p></div>
+            <div class="budget-card invest-card"><h3>70% Investimento</h3><p id="budgetInvestment" class="value">R$0.00</p><p class="text-sm text-gray-500 mt-2">Reserva de emergência, aposentadoria, etc.</p></div>
+            <div class="budget-card fixed-expenses-card"><h3>20% Fixo</h3><p id="budgetFixedExpenses" class="value">R$0.00</p><p class="text-sm text-gray-500 mt-2">Aluguel, contas, etc.</p></div>
+            <div class="budget-card personal-expenses-card"><h3>10% Pessoal</h3><p id="budgetPersonalExpenses" class="value">R$0.00</p><p class="text-sm text-gray-500 mt-2">Lazer, hobbies, etc.</p></div>
         </div>
 
         <div class="disclaimer">
@@ -650,7 +652,8 @@
             }
         };
 
-        const calculateBudget = (netMonthly) => {
+        const calculateBudget = (netMonthly, grossMonthly, totalDeductionsMonthly) => {
+            const dynamicRuleBtn = document.getElementById('dynamicRuleBtn');
             const rule702010Btn = document.getElementById('rule702010Btn');
             const rule503020Btn = document.getElementById('rule503020Btn');
             const customRuleBtn = document.getElementById('customRuleBtn');
@@ -661,32 +664,83 @@
             const budgetError = document.getElementById('budgetError');
 
             let investP, fixedP, personalP;
-
-            if (customRuleBtn.classList.contains('active')) {
-                investP = parseFloat(customInvest.value) || 0;
-                fixedP = parseFloat(customFixed.value) || 0;
-                personalP = parseFloat(customPersonal.value) || 0;
-                if ((investP + fixedP + personalP) > 100) {
-                    budgetError.classList.remove('hidden');
-                    return;
-                }
-                budgetError.classList.add('hidden');
-            } else if (rule503020Btn.classList.contains('active')) {
-                investP = 50; fixedP = 30; personalP = 20;
-            } else {
-                investP = 70; fixedP = 20; personalP = 10;
-            }
-
-            document.getElementById('budgetTotalValue').textContent = formatCurrency(netMonthly, 'R$');
-            document.getElementById('budgetInvestment').textContent = formatCurrency(netMonthly * (investP / 100), 'R$');
-            document.getElementById('budgetFixedExpenses').textContent = formatCurrency(netMonthly * (fixedP / 100), 'R$');
-            document.getElementById('budgetPersonalExpenses').textContent = formatCurrency(netMonthly * (personalP / 100), 'R$');
-
-            document.querySelector('.invest-card h3').textContent = `${investP}% Investimento`;
-            document.querySelector('.fixed-expenses-card h3').textContent = `${fixedP}% Fixo`;
-            document.querySelector('.personal-expenses-card h3').textContent = `${personalP}% Pessoal`;
+            let investVal, fixedVal, personalVal;
             
-            customBudgetInputs.classList.toggle('hidden', !customRuleBtn.classList.contains('active'));
+            if (dynamicRuleBtn.classList.contains('active')) {
+                // Modo Dinâmico: A base se torna o Faturamento Bruto
+                let baseDyn = grossMonthly;
+                if (baseDyn <= 0) baseDyn = 1; // previne div por zero
+                
+                fixedVal = totalDeductionsMonthly; // Despesas totais (Impostos + Saúde + INSS + Extras)
+                let remainingVal = netMonthly; // Que é exatamente baseDyn - fixedVal
+                
+                // Dividimos o restante (Renda Líquida) baseando-se na proporção original de 70 para 10 (ou seja, 7 para 1)
+                investVal = remainingVal * (7 / 8);
+                personalVal = remainingVal * (1 / 8);
+
+                investP = (investVal / baseDyn) * 100;
+                fixedP = (fixedVal / baseDyn) * 100;
+                personalP = (personalVal / baseDyn) * 100;
+
+                budgetError.classList.add('hidden');
+                customBudgetInputs.classList.add('hidden');
+
+                document.querySelector('#budgetTotalInfo .text-gray-500').textContent = "Base: Faturamento Bruto Mensal";
+                document.getElementById('budgetTotalValue').textContent = formatCurrency(baseDyn, 'R$');
+                
+                document.getElementById('budgetInvestment').textContent = formatCurrency(investVal, 'R$');
+                document.querySelector('.invest-card h3').textContent = `${investP.toFixed(1).replace('.0', '')}% Poupar / Investir`;
+                document.querySelector('.invest-card p.text-gray-500').textContent = "Reserva de emergência, etc. (Ajustado)";
+                
+                document.getElementById('budgetFixedExpenses').textContent = formatCurrency(fixedVal, 'R$');
+                document.querySelector('.fixed-expenses-card h3').textContent = `${fixedP.toFixed(1).replace('.0', '')}% Despesas Totais`;
+                document.querySelector('.fixed-expenses-card p.text-gray-500').textContent = "Suas deduções e despesas totais";
+                
+                document.getElementById('budgetPersonalExpenses').textContent = formatCurrency(personalVal, 'R$');
+                document.querySelector('.personal-expenses-card h3').textContent = `${personalP.toFixed(1).replace('.0', '')}% Gastos Pessoais`;
+                document.querySelector('.personal-expenses-card p.text-gray-500').textContent = "Lazer, hobbies, etc. (Ajustado)";
+
+            } else {
+                // Lógica Tradicional (Baseada puramente na Renda Líquida)
+                let baseValue = netMonthly;
+                document.querySelector('#budgetTotalInfo .text-gray-500').textContent = "Base: Renda Líquida Mensal";
+                
+                // Textos descritivos padrão
+                document.querySelector('.invest-card p.text-gray-500').textContent = "Reserva de emergência, aposentadoria, etc.";
+                document.querySelector('.fixed-expenses-card p.text-gray-500').textContent = "Aluguel, contas, etc.";
+                document.querySelector('.personal-expenses-card p.text-gray-500').textContent = "Lazer, hobbies, etc.";
+
+                if (customRuleBtn.classList.contains('active')) {
+                    investP = parseFloat(customInvest.value) || 0;
+                    fixedP = parseFloat(customFixed.value) || 0;
+                    personalP = parseFloat(customPersonal.value) || 0;
+                    if ((investP + fixedP + personalP) > 100) {
+                        budgetError.classList.remove('hidden');
+                        return;
+                    }
+                    budgetError.classList.add('hidden');
+                    customBudgetInputs.classList.remove('hidden');
+                } else if (rule503020Btn.classList.contains('active')) {
+                    investP = 20; fixedP = 50; personalP = 30; // 50/30/20 standard
+                    customBudgetInputs.classList.add('hidden');
+                } else {
+                    investP = 70; fixedP = 20; personalP = 10;
+                    customBudgetInputs.classList.add('hidden');
+                }
+
+                investVal = baseValue * (investP / 100);
+                fixedVal = baseValue * (fixedP / 100);
+                personalVal = baseValue * (personalP / 100);
+
+                document.getElementById('budgetTotalValue').textContent = formatCurrency(baseValue, 'R$');
+                document.getElementById('budgetInvestment').textContent = formatCurrency(investVal, 'R$');
+                document.getElementById('budgetFixedExpenses').textContent = formatCurrency(fixedVal, 'R$');
+                document.getElementById('budgetPersonalExpenses').textContent = formatCurrency(personalVal, 'R$');
+
+                document.querySelector('.invest-card h3').textContent = `${investP}% Investimento`;
+                document.querySelector('.fixed-expenses-card h3').textContent = `${fixedP}% Fixo`;
+                document.querySelector('.personal-expenses-card h3').textContent = `${personalP}% Pessoal`;
+            }
         };
 
         const calculateEarnings = async () => {
@@ -821,7 +875,11 @@
             document.getElementById('finalNetWeeklyBRL').textContent = formatCurrency(finalNetAnnual / WEEKS_PER_YEAR, 'R$');
             document.getElementById('finalNetDailyBRL').textContent = formatCurrency(annualWorkDays > 0 ? finalNetAnnual / annualWorkDays : 0, 'R$');
 
-            calculateBudget(netMonthly);
+            // Chamada do orçamento no modo dinâmico considerando as despesas totais
+            const grossMonthly = grossAnnualBRL / 12;
+            const totalDeductionsMonthly = totalDeductions / 12;
+
+            calculateBudget(netMonthly, grossMonthly, totalDeductionsMonthly);
         };
 
         const fetchCurrencyRates = async () => {
@@ -851,7 +909,7 @@
             document.getElementById('addExpenseButton').addEventListener('click', () => addExpenseField());
             document.getElementById('fetchRatesButton').addEventListener('click', fetchCurrencyRates);
 
-            ['rule702010Btn', 'rule503020Btn', 'customRuleBtn'].forEach(id => {
+            ['dynamicRuleBtn', 'rule702010Btn', 'rule503020Btn', 'customRuleBtn'].forEach(id => {
                 document.getElementById(id).addEventListener('click', (e) => {
                     document.querySelectorAll('.budget-buttons button').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
